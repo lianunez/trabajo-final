@@ -1,0 +1,2 @@
+jwt:
+  secret-key: abc1234

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #d6d9e6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .login-container {
+        background-color: #464c72;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 400px;
+        position: relative;
+      }
+      .login-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      .login-header h2 {
+        color: #fff;
+        font-size: 24px;
+        margin: 0;
+      }
+      .header-image {
+        width: 35px;
+        height: 35px;
+        margin-left: 10px;
+        border-radius: 50%;
+        background-color: white;
+      }
+      .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      .input-group label {
+        display: block;
+        color: #ddd;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .input-group input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: #fff;
+        box-sizing: border-box;
+      }
+      .login-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #7178b7;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        margin-top: 10px;
+        transition: background 0.3s;
+        box-sizing: border-box;
+      }
+      .login-btn:hover {
+        background-color: #5a6098;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-header">
+        <h2>Login</h2>
+        <img
+          src="/images/logo.svg"
+          alt="User Icon"
+          class="header-image"
+          id="header-img"
+        />
+      </div>
+      <form id="login-form">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+      <p id="message" style="color: red; margin-top: 15px"></p>
+    </div>
+
+    <script>
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+          const user = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+          const message = document.getElementById("message");
+
+          try {
+            const response = await fetch(
+              "http://127.0.0.1:8080/api/auth/login",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ user, password }),
+              }
+            );
+            const data = await response.text();
+
+            if (response.status == 202) {
+              sessionStorage.setItem("userInfo", data);
+              message.style.color = "green";
+              message.innerText = "Login successful!";
+              
+              setTimeout(()=>{
+                location.href="/"
+              },2000)
+              
+            } else if (response.status == 401) {
+              message.style.color = "red";
+              message.innerText =
+                data.message || "Invalid password";
+            } else if (response.status == 404) {
+              message.style.color = "red";
+              message.innerText =
+                data.message || "Username not found";
+            }
+          } catch (error) {
+            message.style.color = "red";
+            message.innerText = "Error connecting to the server";
+          }
+        });
+    </script>
+  </body>
+</html>

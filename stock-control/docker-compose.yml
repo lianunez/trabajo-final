@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+
+  database:
+    container_name: stock-control-db
+    build:
+      context: java_stock_control/
+      dockerfile: database.Dockerfile
+    ports:
+      - 5432:5432
+    networks:
+      - stock-control-net
+
+  backend:
+    container_name: stock-control-be
+    build:
+      context: java_stock_control/
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - stock-control-net
+    depends_on:
+      - database
+
+  frontend:
+    container_name: stock-control-fe
+    build:
+      context: stock-control-FE
+      dockerfile: Dockerfile
+    ports:
+      - 5500:5500
+    networks:
+      - stock-control-net
+
+networks:
+  stock-control-net:
+    driver: bridge

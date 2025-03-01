@@ -1,0 +1,31 @@
+### Maven ###
+.mvn
+mvnw
+mvnw.cmd
+.DS_Store
+
+HELP.md
+build/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+!**/src/main/**/target/
+!**/src/test/**/target/
+target/
+*.class
+*.jar
+*.ear
+*.logs
+.eclipse
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### VS Code ###
+.vscode/
+/logs/
+*.log
