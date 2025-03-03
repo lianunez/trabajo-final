@@ -51,7 +51,8 @@ CREATE TABLE public.products (
 INSERT INTO public.users ("name", password) VALUES ('admin', crypt('admin', gen_salt('bf')));
 INSERT INTO public.roles ("name", user_id) VALUES ('ROLE_ADMIN', 1);
 INSERT INTO public.permissions (permissions, role_id)
-VALUES (ARRAY['users.check', 'users.delete', 'users.create', 'users.update',
+VALUES (ARRAY['session.alive',
+'users.check', 'users.delete', 'users.create', 'users.update',
 'products.check', 'products.delete', 'products.create', 'products.update',
 'roles.check', 'roles.create', 'roles.update', 'roles.delete',
 'providers.check', 'providers.create', 'providers.update', 'providers.delete'], 1);

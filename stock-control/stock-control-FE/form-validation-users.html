@@ -183,12 +183,8 @@
                 ><span class="nav-text">Usuarios</span></a
               >
               <ul aria-expanded="false">
+                <li><a href="form-validation-users.html" id="users.create">Agregar Usuario</a></li>
                 <li>
-                  <a href="form-validation-users.html" id="users.create"
-                    >Agregar Usuario</a
-                  >
-                </li>
-                <li></li>
               </ul>
             </li>
             <!-- delete -->
@@ -211,7 +207,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                   <div class="page-header">
                     <div class="page-title">
-                      <h1>Proveedores</h1>
+                      <h1>Crear Usuario</h1>
                     </div>
                   </div>
                 </div>
@@ -223,7 +219,7 @@
                         <li class="breadcrumb-item">
                           <a href="/index.html">Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Crear Producto</li>
+                        <li class="breadcrumb-item active">Crear Usuario</li>
                       </ol>
                     </div>
                   </div>
@@ -235,90 +231,6 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <div class="card">
-                      <div class="card-header">
-                        <h4 class="card-title">Productos</h4>
-                      </div>
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table student-data-table m-t-20">
-                            <thead>
-                              <tr>
-                                <th>CUIT</th>
-                                <th>Nombre</th>
-                              </tr>
-                            </thead>
-                            <tbody id="prod-table-body">
-                              <tr>
-                                <td>Class Test</td>
-                                <td>Mathmatics</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                              <tr>
-                                <td>Class Test</td>
-                                <td>Mathmatics</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                              <tr>
-                                <td>Class Test</td>
-                                <td>English</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                              <tr>
-                                <td>Class Test</td>
-                                <td>Bangla</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                              <tr>
-                                <td>Class Test</td>
-                                <td>Mathmatics</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                              <tr>
-                                <td>Class Test</td>
-                                <td>English</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                              <tr>
-                                <td>Class Test</td>
-                                <td>Mathmatics</td>
-                                <td>4.00</td>
-                                <td>95.00</td>
-                                <td>100</td>
-                                <td>20/04/2017</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                          <div id="pagination" style="margin-top: 10px"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="card">
-                      <div class="card-header">
-                        <h4 class="card-title">Agregar proveedor</h4>
-                      </div>
                       <div class="card-body">
                         <div class="form-validation">
                           <form class="form-valide">
@@ -326,23 +238,7 @@
                               <label
                                 class="col-lg-4 col-form-label"
                                 for="val-username"
-                                >CUIT <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <input
-                                  type="number"
-                                  class="form-control"
-                                  id="cuit-input"
-                                  name="val-username"
-                                  placeholder="CUIT del proveedor..."
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-email"
-                                >Nombre / Razón Social
+                                >Nombre
                                 <span class="text-danger">*</span></label
                               >
                               <div class="col-lg-8">
@@ -350,9 +246,138 @@
                                   type="text"
                                   class="form-control"
                                   id="name-input"
-                                  name="val-email"
-                                  placeholder="Nombre del proveedor..."
+                                  name="val-username"
+                                  placeholder="Ingrese el nombre del usuario"
+                                  required
                                 />
+                              </div>
+                            </div>
+                            <div class="form-group row">
+                              <label
+                                class="col-lg-4 col-form-label"
+                                for="val-email"
+                                >Contraseña
+                                <span class="text-danger">*</span></label
+                              >
+                              <div class="col-lg-8">
+                                <input
+                                  type="password"
+                                  class="form-control"
+                                  id="pass-input"
+                                  name="val-email"
+                                  placeholder="Ingrese una clave"
+                                />
+                              </div>
+                            </div>
+                            <div class="card">
+                              <div class="card-header">
+                                <h4 class="card-title">Permisos de Producto</h4>
+                              </div>
+                              <div class="card-body">
+                                <div class="basic-form">
+                                  <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          id="products.create"
+                                          class="form-check-input"
+                                          value="products.create"
+                                        />Crear
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input type="checkbox"
+                                        id="products.update""
+                                        class="form-check-input"
+                                        value="products.update">Editar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          id="products.delete"
+                                          class="form-check-input"
+                                          value="products.delete"
+                                        />Eliminar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          id="products.check"
+                                          class="form-check-input"
+                                          value="products.check"
+                                        />Chequear
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="card">
+                              <div class="card-header">
+                                <h4 class="card-title">
+                                  Permisos de Proveedor
+                                </h4>
+                              </div>
+                              <div class="card-body">
+                                <div class="basic-form">
+                                  <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.create"
+                                          value="providers.create"
+                                        />Crear
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.update"
+                                          value="providers.update"
+                                        />Editar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.delete"
+                                          value="providers.delete"
+                                        />Eliminar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.check"
+                                          value="providers.check"
+                                        />Chequear
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </form>
@@ -362,7 +387,7 @@
                           <div class="form-group row">
                             <div class="col-lg-8 ml-auto">
                               <button
-                                onclick="createProvider()"
+                                onclick="createProduct()"
                                 class="btn btn-primary"
                               >
                                 Submit
@@ -375,73 +400,6 @@
                   </div>
                 </div>
               </section>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Edit Product Modal -->
-      <div
-        id="editProductModal"
-        class="modal fade"
-        tabindex="-1"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Edit Product</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <form id="editProductForm">
-                <input type="hidden" id="editProductId" />
-                <div class="mb-3">
-                  <label class="form-label">Code:</label>
-                  <input type="text" id="editCode" class="form-control" />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Name:</label>
-                  <input type="text" id="editName" class="form-control" />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Amount:</label>
-                  <input type="number" id="editAmount" class="form-control" />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Expiry Date:</label>
-                  <input type="date" id="editExpiryDate" class="form-control" />
-                </div>
-
-                <input
-                  type="number"
-                  id="editUserId"
-                  class="form-control"
-                  hidden
-                />
-                <input
-                  type="number"
-                  id="editProviderId"
-                  class="form-control"
-                  hidden
-                />
-
-                <div class="mb-3 text-success" id="after-process-msg">
-                  Producto actualizado.
-                </div>
-
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  onclick="updateProduct()"
-                >
-                  Save Changes
-                </button>
-              </form>
             </div>
           </div>
         </div>
@@ -503,13 +461,14 @@
 
     <script src="./vendor/moment/moment.min.js"></script>
     <script src="./vendor/pg-calendar/js/pignose.calendar.min.js"></script>
+
+    <script src="./js/dashboard/dashboard-2.js"></script>
     <!-- Circle progress -->
 
     <script>
       let messageDiv = document.getElementById("after-process-msg");
       messageDiv.hidden = true;
-      fetchProviders();
-
+    
       async function fetchProviders() {
         try {
           let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -530,7 +489,7 @@
             case 200:
               const providers = await response.json();
               console.log(providers);
-              setProvidersTable(providers);
+              populateSelect(providers);
               break;
             case 403:
               location.href = "./components/logout.html";
@@ -546,111 +505,63 @@
         }
       }
 
-      function setProvidersTable(providers, page = 1) {
-        const tableBody = document.getElementById("prod-table-body");
-        tableBody.innerHTML = "";
+      function populateSelect(providers) {
+        const select = document.getElementById("val-select2");
+        select.innerHTML = '<option value="">Seleccionar un proveedor</option>';
 
-        // Calculate pagination
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        const paginatedProducts = providers.slice(start, end);
-
-        paginatedProducts.forEach((product) => {
-          const row = document.createElement("tr");
-
-          row.innerHTML = `
-              <td>${product.cuit}</td>
-              <td>${product.name}</td>
-              <td>
-                  <button class="btn btn-warning" onclick="openEditModal(${product.id})" data-permission="products.update">Edit</button>
-              </td>
-              <td>
-                  <button class="btn btn-danger" onclick="confirmDelete(${product.id})" data-permission="products.delete">Delete</button>
-              </td>
-          `;
-
-          tableBody.appendChild(row);
+        providers.forEach((provider) => {
+          const option = document.createElement("option");
+          option.value = provider.id;
+          option.textContent = provider.name;
+          select.appendChild(option);
         });
-
-        updatePaginationButtons(providers);
-        handleDynamicTablePermissions(); // Apply permissions to the dynamic table
-        handleStaticElementsPermissions();
       }
 
-      let currentPage = 1;
-      const rowsPerPage = 4; // Number of rows per page
+      fetchProviders();
 
-      function updatePaginationButtons(products) {
-        const paginationContainer = document.getElementById("pagination");
-        paginationContainer.innerHTML = "";
+      async function createProduct() {
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        let permissions = ["session.alive"];
+        const name = document.getElementById("name-input").value;
+        const password = document.getElementById("pass-input").value;
 
-        const totalPages = Math.ceil(products.length / rowsPerPage);
+        let checkboxes = [
+          document.getElementById("products.create"),
+          document.getElementById("products.update"),
+          document.getElementById("products.delete"),
+          document.getElementById("products.check"),
+          document.getElementById("providers.create"),
+          document.getElementById("providers.update"),
+          document.getElementById("providers.delete"),
+          document.getElementById("providers.check"),
+        ]
 
-        // Previous Button
-        const prevButton = document.createElement("button");
-        prevButton.innerText = "Previous";
-        prevButton.className = "btn btn-primary";
-        prevButton.disabled = currentPage === 1;
-        prevButton.onclick = () => {
-          if (currentPage > 1) {
-            currentPage--;
-            setProvidersTable(products, currentPage);
+        checkboxes.forEach((checkbox) =>{
+          if (checkbox.checked){
+              permissions.push(checkbox.value);
           }
-        };
-        paginationContainer.appendChild(prevButton);
+        })
 
-        // Page Number Buttons
-        for (let i = 1; i <= totalPages; i++) {
-          const button = document.createElement("button");
-          button.innerText = i;
-          button.className = "btn";
-          button.onclick = () => {
-            currentPage = i;
-            setProvidersTable(products, i);
-          };
-
-          if (i === currentPage) {
-            button.style.fontWeight = "bold";
-            button.style.color = "#DC3545";
-          }
-
-          paginationContainer.appendChild(button);
+        const role = {
+          name: "ROLE_"+name.split(" ")[0],
+          user_id: 123456,
+          permissions: permissions
         }
 
-        // Next Button
-        const nextButton = document.createElement("button");
-        nextButton.innerText = "Next";
-        nextButton.className = "btn btn-primary";
-        nextButton.disabled = currentPage === totalPages;
-        nextButton.onclick = () => {
-          if (currentPage < totalPages) {
-            currentPage++;
-            setProvidersTable(products, currentPage);
-          }
-        };
-        paginationContainer.appendChild(nextButton);
-      }
-
-      //create
-      async function createProvider() {
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-
-        const cuit = document.getElementById("cuit-input").value;
-        const name = document.getElementById("name-input").value;
-
         const data = {
-          cuit: cuit,
-          name: name,
+          user_name: name,
+          password: password,
+          role: role
         };
 
         try {
           const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/create",
+            "http://127.0.0.1:8080/api/v1/users/create",
             {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                "Trigger-User": userInfo.id,
+                "Trigger-User": userInfo?.id,
                 Authorization: `Bearer ${userInfo?.jwt}`,
               },
               body: JSON.stringify(data),
@@ -659,13 +570,14 @@
 
           switch (response.status) {
             case 201 || 200:
+            //let messageDiv = document.getElementById("after-process-msg");
               messageDiv.hidden = false;
-              fetchProviders();
               break;
             case 403:
-              messageDiv.classList = "mb-3 text-danger";
-              messageDiv.innerHTML = "No tienes permisos para esta acción";
-              messageDiv.hidden = false;
+            let messageField = document.getElementById("after-process-msg");
+            messageField.classList = "mb-3 text-danger";
+            messageField.innerHTML = "No tienes permisos para esta acción";
+            messageField.hidden = false;
               break;
             default:
               messageDiv.classList = "mb-3 text-danger";
@@ -673,101 +585,11 @@
               messageDiv.hidden = false;
               break;
           }
-
-          console.log(response.status);
         } catch (error) {
-          console.error("Error fetching providers:", error);
-          messageDiv.classList = "mb-3 text-danger";
-          messageDiv.innerHTML = `Algo salió mal. ${error}`;
-          messageDiv.hidden = false;
-        }
-      }
-
-      //roles
-      function handleDynamicTablePermissions() {
-        console.log("handleDynamicTablePermissions");
-        // Get the user permissions from session storage
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        if (
-          !userInfo ||
-          !userInfo.role ||
-          !Array.isArray(userInfo.role.permissions)
-        ) {
-          console.error("Invalid userInfo structure:", userInfo);
-          return;
+          console.error("Error fetching users:", error);
         }
 
-        const permissions = userInfo.role.permissions;
-
-        // Loop through all the edit and delete buttons in the dynamic table
-        const actionButtons = document.querySelectorAll("[data-permission]"); // Target elements with data-permission attribute
-
-        actionButtons.forEach((button) => {
-          const actionId = button.getAttribute("data-permission");
-
-          if (actionId && !permissions.includes(actionId)) {
-            button.style.display = "none"; // Hide button if permission is not found
-          }
-        });
-      }
-
-      function handleStaticElementsPermissions() {
-        console.log("handleStaticElementsPermissions");
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        if (
-          !userInfo ||
-          !userInfo.role ||
-          !Array.isArray(userInfo.role.permissions)
-        ) {
-          console.error("Invalid userInfo structure:", userInfo);
-          return;
-        }
-
-        const actions = [
-          document.getElementById("products.create"),
-          document.getElementById("providers.create"),
-          document.getElementById("products.check"),
-          document.getElementById("users.create"),
-        ];
-
-        const permissions = userInfo.role.permissions;
-        console.log(permissions);
-
-        actions.forEach((action) => {
-          if (action) {
-            const actionId = action.id;
-            if (!permissions.includes(actionId)) {
-              action.style.display = "none";
-            }
-          }
-        });
-      }
-
-      // <EDIT>
-      async function openEditModal(productId) {
-        let messageDiv = document.getElementById("after-process-msg");
-        messageDiv.hidden = true;
-        let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        const response = await productsFromAPI(userInfo);
-        const products = await response.json();
-        const product = products.find((p) => p.id === productId);
-        if (!product) return;
-
-        // Fill form fields
-        document.getElementById("editProductId").value = product.id;
-        document.getElementById("editCode").value = product.code;
-        document.getElementById("editName").value = product.name;
-        document.getElementById("editAmount").value = product.amount;
-        document.getElementById("editExpiryDate").value = product.expiry_date;
-        document.getElementById("editUserId").value = product.user_id.id;
-        document.getElementById("editProviderId").value =
-          product.provider_id.id;
-
-        // Show modal
-        const modal = new bootstrap.Modal(
-          document.getElementById("editProductModal")
-        );
-        modal.show();
+        console.log(data);
       }
     </script>
   </body>

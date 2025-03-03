@@ -46,7 +46,6 @@
       <div class="nav-header">
         <a href="index.html" class="brand-logo">
           <img class="logo-abbr" src="./images/logo.png" alt="" />
-          <img class="logo-compact" src="./images/logo-text.png" alt="" />
         </a>
 
         <div class="nav-control">
@@ -135,7 +134,7 @@
                 class="has-arrow"
                 href="javascript:void()"
                 aria-expanded="false"
-                ><i class="icon icon-single-04"></i
+                ><i class="icon icon-chart-bar-30"></i
                 ><span class="nav-text">Dashboard</span></a
               >
               <ul aria-expanded="false">
@@ -153,7 +152,7 @@
                 ><span class="nav-text">Productos</span></a
               >
               <ul aria-expanded="false">
-                <li><a href="form-validation.html">Agregar Producto</a></li>
+                <li><a href="form-validation.html" id="products.create">Agregar Producto</a></li>
                 <li>
               </ul>
             </li>
@@ -166,7 +165,21 @@
                 ><span class="nav-text">Proveedores</span></a
               >
               <ul aria-expanded="false">
-                <li><a href="form-validation-providers.html">Agregar Proveedor</a></li>
+                <li><a href="form-validation-providers.html" id="providers.add">Agregar Proveedor</a></li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-single-04"></i
+                ><span class="nav-text">Usuarios</span></a
+              >
+              <ul aria-expanded="false">
+                <li><a href="form-validation-users.html" id="users.create">Agregar Usuario</a></li>
+                <li>
               </ul>
             </li>
             <!-- delete -->
@@ -219,7 +232,7 @@
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table student-data-table m-t-20">
+                    <table class="table student-data-table m-t-20" id="products.check">
                       <thead>
                         <tr>
                           <th>Código</th>
@@ -396,7 +409,7 @@
     <script src="./vendor/pg-calendar/js/pignose.calendar.min.js"></script>
 
     <script src="./js/dashboard/dashboard-2.js"></script>
-    
+  
     <!-- Circle progress -->
   </body>
 </html>

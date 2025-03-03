@@ -47,7 +47,6 @@
         <a href="index.html" class="brand-logo">
           <img class="logo-abbr" src="./images/logo.png" alt="" />
           <img class="logo-compact" src="./images/logo-text.png" alt="" />
-          <img class="brand-title" src="./images/logo-text.png" alt="" />
         </a>
 
         <div class="nav-control">
@@ -127,57 +126,76 @@
       <!--**********************************
             Sidebar start
         ***********************************-->
-        <div class="quixnav">
-          <div class="quixnav-scroll">
-            <ul class="metismenu" id="menu">
-              <li class="nav-label first">Main Menu</li>
-              <!-- <li><a href="index.html"><i class="icon icon-single-04"></i><span class="nav-text">Dashboard</span></a>
+      <div class="quixnav">
+        <div class="quixnav-scroll">
+          <ul class="metismenu" id="menu">
+            <li class="nav-label first">Main Menu</li>
+            <!-- <li><a href="index.html"><i class="icon icon-single-04"></i><span class="nav-text">Dashboard</span></a>
                       </li> -->
-              <li>
-                <a
-                  class="has-arrow"
-                  href="javascript:void()"
-                  aria-expanded="false"
-                  ><i class="icon icon-single-04"></i
-                  ><span class="nav-text">Dashboard</span></a
-                >
-                <ul aria-expanded="false">
-                  <li><a href="./index.html">Dashboard Productos</a></li>
-                </ul>
-              </li>
-  
-              <li class="nav-label"></li>
-              <li>
-                <a
-                  class="has-arrow"
-                  href="javascript:void()"
-                  aria-expanded="false"
-                  ><i class="icon icon-app-store"></i
-                  ><span class="nav-text">Productos</span></a
-                >
-                <ul aria-expanded="false">
-                  <li><a href="form-validation.html">Agregar Producto</a></li>
-                  <li>
-                </ul>
-              </li>
-              <li>
-                <a
-                  class="has-arrow"
-                  href="javascript:void()"
-                  aria-expanded="false"
-                  ><i class="icon icon-chart-bar-33"></i
-                  ><span class="nav-text">Proveedores</span></a
-                >
-                <ul aria-expanded="false">
-                  <li><a href="form-validation-providers.html">Agregar Proveedor</a></li>
-                </ul>
-              </li>
-              <!-- delete -->
-  
-            </ul>
-          </div>
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-single-04"></i
+                ><span class="nav-text">Dashboard</span></a
+              >
+              <ul aria-expanded="false">
+                <li><a href="./index.html">Dashboard Productos</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-label"></li>
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-app-store"></i
+                ><span class="nav-text">Productos</span></a
+              >
+              <ul aria-expanded="false">
+                <li><a href="form-validation.html">Agregar Producto</a></li>
+                <li></li>
+              </ul>
+            </li>
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-chart-bar-33"></i
+                ><span class="nav-text">Proveedores</span></a
+              >
+              <ul aria-expanded="false">
+                <li>
+                  <a href="form-validation-providers.html">Agregar Proveedor</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-single-04"></i
+                ><span class="nav-text">Usuarios</span></a
+              >
+              <ul aria-expanded="false">
+                <li>
+                  <a href="form-validation-users.html" id="users.create"
+                    >Agregar Usuario</a
+                  >
+                </li>
+                <li></li>
+              </ul>
+            </li>
+            <!-- delete -->
+          </ul>
         </div>
-        <!-- delete -->
+      </div>
+      <!-- delete -->
       <!--**********************************
             Sidebar end
         ***********************************-->
@@ -308,6 +326,9 @@
                               </div>
                             </div>
                           </form>
+                          <div class="mb-3 text-success" id="after-process-msg">
+                            Proveedor agreagado correctamente
+                          </div>
 
                           <div class="form-group row">
                             <div class="col-lg-8 ml-auto">
@@ -391,16 +412,20 @@
     <!-- Circle progress -->
 
     <script>
+      let messageDiv = document.getElementById("after-process-msg");
+        messageDiv.hidden = true;
       async function fetchProviders() {
+        
         try {
           let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
           const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/get-providers",
+            "http://127.0.0.1:8080/api/v1/providers/check",
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
                 Authorization: `Bearer ${userInfo?.jwt}`,
               },
             }
@@ -466,13 +491,32 @@
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                "Trigger-User": userInfo?.id,
                 Authorization: `Bearer ${userInfo?.jwt}`,
               },
-              body: JSON.stringify(data)
+              body: JSON.stringify(data),
             }
           );
-
-          console.log(response.status);
+            alert(response.status)
+          switch (response.status) {
+            case 201:
+            case 200:
+              console.log(response.status);
+              messageDiv.hidden = false;
+              break;
+            case 403:
+              let messageField = document.getElementById("after-process-msg");
+              messageField.classList = "mb-3 text-danger";
+              messageField.innerHTML =
+                "No tienes permisos para esta acción o tu sesión finalizó";
+              messageField.hidden = false;
+              break;
+            default:
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Algo salió mal.";
+              messageDiv.hidden = false;
+              break;
+          }
         } catch (error) {
           console.error("Error fetching providers:", error);
         }
