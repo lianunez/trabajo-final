@@ -1,2 +1,7 @@
 jwt:
   secret-key: abc1234
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

@@ -37,7 +37,7 @@ public class LoginController {
 
         if (foundUser != null && foundUser.getPassword() != null) {
             String token = jwtService.generateToken(foundUser);
-            responseDTO = UserDTO.builder().id(foundUser.getId()).userName(foundUser.getUserName()).jwt(token).build();
+            responseDTO = service.buildDTO(foundUser, token);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
         }
         if (foundUser != null && foundUser.getPassword() == null){
