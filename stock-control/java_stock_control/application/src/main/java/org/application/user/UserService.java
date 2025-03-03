@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -20,6 +24,23 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.encoder = encoder;
+    }
+
+    public List<UserDTO> getUsers() {
+        List<User> users = userRepository.getUsers();
+        List<UserDTO> mappedUsers = users.stream()
+                .map(user -> {
+                    RoleDTO roleDTO = RoleDTO.builder()
+                            .name(user.getRole().getName())
+                            .permissions(user.getRole().getPermission().getPermissions())
+                            .build();
+                    return UserDTO.builder()
+                            .userName(user.getUserName())
+                            .role(roleDTO)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        return mappedUsers;
     }
 
     @Transactional
@@ -41,8 +62,10 @@ public class UserService {
         return foundUser;
     }
 
-    public User findById(Integer id) {
-        return userRepository.findById(id);
+    @Transactional
+    public void delete(Integer id) {
+        Objects.requireNonNull(id);
+        userRepository.delete(id);
     }
 
     public UserDTO buildDTO(User user, String token) {

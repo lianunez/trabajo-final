@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/api/v1/roles")
 public class RoleController {
@@ -22,10 +20,10 @@ public class RoleController {
         this.permissionService = permissionService;
     }
 
-    @GetMapping(path = "/get-roles")
-    public ResponseEntity<List<RoleDTO>> getRoles() {
-        List<RoleDTO> roles = roleService.getRoles();
-        return ResponseEntity.ok().body(roles);
+    @GetMapping(path = "/check")
+    public ResponseEntity<RoleDTO> getUserRole(@RequestParam("user_id") Integer userId) {
+        RoleDTO role = roleService.getUserRole(userId);
+        return ResponseEntity.ok().body(role);
     }
 
     @PostMapping(path = "/create")
@@ -41,4 +39,9 @@ public class RoleController {
         return ResponseEntity.ok().body("UPDATED!");
     }
 
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<String> deleteUserRole(@RequestParam("user_id") Integer userId) {
+        roleService.deleteRole(userId);
+        return ResponseEntity.ok().body("REMOVED!");
+    }
 }

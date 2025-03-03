@@ -20,7 +20,7 @@ public class PermissionController {
         this.service = service;
     }
 
-    @GetMapping(name = "/get-permissions")
+    @GetMapping(name = "/check")
     public ResponseEntity<List<Permission>> getPermissions() {
         return ResponseEntity.ok().body(service.getPermissions());
     }

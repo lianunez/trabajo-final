@@ -26,7 +26,7 @@ public class ProductController {
         return ResponseEntity.ok("CREATED!");
     }
 
-    @GetMapping(path = "/get-products")
+    @GetMapping(path = "/check")
     public ResponseEntity<List<Product>> getProducts() {
         return ResponseEntity.ok().body(service.getProducts());
     }

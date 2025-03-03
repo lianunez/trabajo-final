@@ -25,7 +25,7 @@ public class ProviderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(persistedProvider);
     }
 
-    @GetMapping(path = "/get-providers")
+    @GetMapping(path = "/check")
     public ResponseEntity<List<Provider>> getProviders(){
         List<Provider> providers = proverService.findAll();
         return ResponseEntity.ok().body(providers);

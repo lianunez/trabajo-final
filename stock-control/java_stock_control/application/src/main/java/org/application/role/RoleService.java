@@ -26,8 +26,14 @@ public class RoleService {
     }
 
     @Transactional
-    public void deleteRole(Integer id) {
-        repository.deleteRole(id);
+    public void deleteRole(Integer userId) {
+        Role foundRole = repository.getUserRole(userId);
+        repository.deleteRole(foundRole.getId());
+    }
+
+    public RoleDTO getUserRole(Integer userId) {
+        RoleDTO role = reverseMapper(repository.getUserRole(userId));
+        return role;
     }
 
     @Transactional
@@ -55,6 +61,14 @@ public class RoleService {
         return Role.builder()
                 .name(roleDTO.getName())
                 .user(User.builder().id(roleDTO.getUserId()).build())
+                .build();
+    }
+
+    private RoleDTO reverseMapper(Role role) {
+        return RoleDTO.builder()
+                .name(role.getName())
+                .permissions(role.getPermission().getPermissions())
+                .userId(role.getUser().getId())
                 .build();
     }
 }

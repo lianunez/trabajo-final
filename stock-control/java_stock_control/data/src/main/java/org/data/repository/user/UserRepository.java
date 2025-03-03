@@ -26,6 +26,16 @@ public class UserRepository {
         this.userRepositoryInterface = userRepositoryInterface;
     }
 
+    public List<User> getUsers() {
+        try {
+            String sql = "SELECT u FROM User u";
+            TypedQuery<User> query = entityManager.createQuery(sql, User.class);
+            return query.getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating user: " + e.getMessage(), e);
+        }
+    }
+
     @Transactional
     public User createUser(User user) {
         try {
@@ -68,6 +78,20 @@ public class UserRepository {
             Objects.requireNonNull(id);
             User user = entityManager.find(User.class, id);
             return user;
+        } catch (Exception e) {
+            throw new RuntimeException("Error in search for user: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        try {
+            Objects.requireNonNull(id);
+            User foundUser = findById(id);
+
+            if (foundUser != null) {
+                entityManager.remove(foundUser);
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error in search for user: " + e.getMessage(), e);
         }
