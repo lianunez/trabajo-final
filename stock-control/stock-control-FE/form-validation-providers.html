@@ -47,7 +47,6 @@
         <a href="index.html" class="brand-logo">
           <img class="logo-abbr" src="./images/logo.png" alt="" />
           <img class="logo-compact" src="./images/logo-text.png" alt="" />
-          <img class="brand-title" src="./images/logo-text.png" alt="" />
         </a>
 
         <div class="nav-control">
@@ -172,6 +171,24 @@
                 <li>
                   <a href="form-validation-providers.html">Agregar Proveedor</a>
                 </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-single-04"></i
+                ><span class="nav-text">Usuarios</span></a
+              >
+              <ul aria-expanded="false">
+                <li>
+                  <a href="form-validation-users.html" id="users.create"
+                    >Agregar Usuario</a
+                  >
+                </li>
+                <li></li>
               </ul>
             </li>
             <!-- delete -->
@@ -362,6 +379,59 @@
           </div>
         </div>
       </div>
+
+      <!-- Edit Product Modal -->
+      <div
+        id="editProductModal"
+        class="modal fade"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Product</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form id="editProductForm">
+                <input type="hidden" id="editProductId" />
+                <div class="mb-3">
+                  <label class="form-label">CUIT:</label>
+                  <input type="text" id="editCuit" class="form-control" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Nombre / Razón Social:</label>
+                  <input type="text" id="editName" class="form-control" />
+                </div>
+
+                <input
+                  type="number"
+                  id="editProviderId"
+                  class="form-control"
+                  hidden
+                />
+
+                <div class="mb-3 text-success" id="after-process-msg-modal">
+                  Proveedor actualizado.
+                </div>
+
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="updateProduct()"
+                >
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
       <!--**********************************
             Content body end
         ***********************************-->
@@ -431,11 +501,12 @@
           let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
           const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/get-providers",
+            "http://127.0.0.1:8080/api/v1/providers/check",
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
                 Authorization: `Bearer ${userInfo?.jwt}`,
               },
             }
@@ -474,20 +545,22 @@
           const row = document.createElement("tr");
 
           row.innerHTML = `
-        <td>${product.cuit}</td>
-        <td>${product.name}</td>
-        <td>
-            <button class="btn btn-warning" onclick="openEditModal(${product.id})">Edit</button>
-        </td>
-        <td>
-            <button class="btn btn-danger" onclick="confirmDelete(${product.id})">Delete</button>
-        </td>
-    `;
+              <td>${product.cuit}</td>
+              <td>${product.name}</td>
+              <td>
+                  <button class="btn btn-warning" onclick="openEditModal(${product.id})" data-permission="products.update">Edit</button>
+              </td>
+              <td>
+                  <button class="btn btn-danger" onclick="confirmDelete(${product.id})" data-permission="products.delete">Delete</button>
+              </td>
+          `;
 
           tableBody.appendChild(row);
         });
 
         updatePaginationButtons(providers);
+        handleDynamicTablePermissions(); // Apply permissions to the dynamic table
+        handleStaticElementsPermissions();
       }
 
       let currentPage = 1;
@@ -563,6 +636,7 @@
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
                 Authorization: `Bearer ${userInfo?.jwt}`,
               },
               body: JSON.stringify(data),
@@ -570,14 +644,21 @@
           );
 
           switch (response.status) {
-            case 201 || 200:
+            case 201:
+            case 200:
               messageDiv.hidden = false;
               fetchProviders();
+              break;
+            case 403:
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "No tienes permisos para esta acción";
+              messageDiv.hidden = false;
               break;
             default:
               messageDiv.classList = "mb-3 text-danger";
               messageDiv.innerHTML = "Algo salió mal.";
               messageDiv.hidden = false;
+              break;
           }
 
           console.log(response.status);
@@ -586,6 +667,226 @@
           messageDiv.classList = "mb-3 text-danger";
           messageDiv.innerHTML = `Algo salió mal. ${error}`;
           messageDiv.hidden = false;
+        }
+      }
+
+      // <DELETE>
+      function confirmDelete(productId) {
+        const isConfirmed = confirm("Estás seguro de eliminar este producto?");
+
+        if (isConfirmed) {
+          deleteProduct(productId);
+        }
+      }
+      async function deleteProduct(id) {
+        try {
+          const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+          const response = await fetch(
+            `http://127.0.0.1:8080/api/v1/providers/delete/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+            }
+          );
+
+          switch (response.status) {
+            case 201:
+            case 200:
+              //let messageDiv = document.getElementById("after-process-msg");
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Proveedor eliminado.";
+              messageDiv.hidden = false;
+              fetchProviders();
+              break;
+            case 403:
+              let messageField = document.getElementById("after-process-msg");
+              messageField.classList = "mb-3 text-danger";
+              messageField.innerHTML = "No tienes permisos para esta acción";
+              messageField.hidden = false;
+              break;
+            default:
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Algo salió mal.";
+              messageDiv.hidden = false;
+              break;
+          }
+        } catch (error) {
+          log.error(error);
+        }
+      }
+
+      //roles
+      function handleDynamicTablePermissions() {
+        console.log("handleDynamicTablePermissions");
+        // Get the user permissions from session storage
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        if (
+          !userInfo ||
+          !userInfo.role ||
+          !Array.isArray(userInfo.role.permissions)
+        ) {
+          console.error("Invalid userInfo structure:", userInfo);
+          return;
+        }
+
+        const permissions = userInfo.role.permissions;
+
+        // Loop through all the edit and delete buttons in the dynamic table
+        const actionButtons = document.querySelectorAll("[data-permission]"); // Target elements with data-permission attribute
+
+        actionButtons.forEach((button) => {
+          const actionId = button.getAttribute("data-permission");
+
+          if (actionId && !permissions.includes(actionId)) {
+            button.style.display = "none"; // Hide button if permission is not found
+          }
+        });
+      }
+
+      function handleStaticElementsPermissions() {
+        console.log("handleStaticElementsPermissions");
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        if (
+          !userInfo ||
+          !userInfo.role ||
+          !Array.isArray(userInfo.role.permissions)
+        ) {
+          console.error("Invalid userInfo structure:", userInfo);
+          return;
+        }
+
+        const actions = [
+          document.getElementById("products.create"),
+          document.getElementById("providers.create"),
+          document.getElementById("products.check"),
+          document.getElementById("users.create"),
+        ];
+
+        const permissions = userInfo.role.permissions;
+        console.log(permissions);
+
+        actions.forEach((action) => {
+          if (action) {
+            const actionId = action.id;
+            if (!permissions.includes(actionId)) {
+              action.style.display = "none";
+            }
+          }
+        });
+      }
+
+      // <EDIT>
+      async function openEditModal(productId) {
+        let messageDiv = document.getElementById("after-process-msg-modal");
+        messageDiv.hidden = true;
+        let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        const products = await getProviders();
+        const product = products.find((p) => p.id === productId);
+        if (!product) return;
+
+        // Fill form fields
+        document.getElementById("editProviderId").value = product.id;
+        document.getElementById("editCuit").value = product.cuit;
+        document.getElementById("editName").value = product.name;
+
+        // Show modal
+        const modal = new bootstrap.Modal(
+          document.getElementById("editProductModal")
+        );
+        modal.show();
+      }
+
+      async function getProviders() {
+        try {
+          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
+          const response = await fetch(
+            "http://127.0.0.1:8080/api/v1/providers/check",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              const providers = await response.json();
+              return providers;
+              break;
+            case 403:
+              location.href = "./components/logout.html";
+              break;
+            case 500:
+          }
+        } catch (error) {
+          console.error("Error fetching providers:", error);
+        }
+      }
+
+      async function updateProduct() {
+        try {
+          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+          const productId = document.getElementById("editProviderId").value;
+          const data = {
+            id: productId,
+            cuit: document.getElementById("editCuit").value,
+            name: document.getElementById("editName").value
+          };
+          
+          const response = await fetch(
+            "http://127.0.0.1:8080/api/v1/providers/update",
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+              body: JSON.stringify(data),
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              let messageDiv = document.getElementById("after-process-msg-modal");
+              messageDiv.hidden = false;
+              messageDiv.classList = "mb-3 text-success";
+              messageDiv.innerHTML = "Producto actualizado.";
+              const modal = new bootstrap.Modal(
+                document.getElementById("editProductModal")
+              );
+              modal.hide();
+              fetchProviders();
+              //messageDiv.style.display = "none";
+              break;
+            case 403:
+              let messageField = document.getElementById("after-process-msg-modal");
+              messageField.hidden = false;
+              messageField.classList = "mb-3 text-danger";
+              messageField.innerHTML = "No tienes permisos para esta acción.";
+              break;
+
+            default:
+              messageDiv.style.display = "block";
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Algo salió mal.";
+              //messageDiv.style.display = "none";
+              break;
+          }
+        } catch (error) {
+          console.error(error);
+          let messageDiv = document.getElementById("after-process-msg-modal");
+          messageDiv.hidden = false;
+          messageDiv.classList = "mb-3 text-danger";
+          messageDiv.innerHTML = `Algo salió mal. ${error}`;
         }
       }
     </script>

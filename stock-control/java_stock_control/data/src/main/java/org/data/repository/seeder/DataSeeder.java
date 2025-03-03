@@ -72,14 +72,6 @@ public class DataSeeder implements CommandLineRunner {
                         .build();
                 userRepository.createUser(u3);
 
-                // provider and user search. Reason: use their ids to create new products
-                Provider provider1 = providerRepository.findProvider("5000");
-                Provider provider2 = providerRepository.findProvider("6000");
-                Provider provider3 = providerRepository.findProvider("7000");
-                User user1 = userRepository.findUser("USER_1");
-                User user2 = userRepository.findUser("USER_2");
-                User user3 = userRepository.findUser("USER_3");
-
                 // products persists
                 // provider 1
                 Product prod1 = Product.builder()
@@ -88,8 +80,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_1")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user1)
-                        .provider(provider1)
+                        .user(u1)
+                        .provider(p1)
                         .build();
                 productRepository.createProduct(prod1);
 
@@ -99,8 +91,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_2")
                         .expiryDate(expiryDate(3))
                         .date(createdAt(2))
-                        .user(user1)
-                        .provider(provider1)
+                        .user(u1)
+                        .provider(p1)
                         .build();
                 productRepository.createProduct(prod2);
 
@@ -110,8 +102,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_3")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(2))
-                        .user(user1)
-                        .provider(provider1)
+                        .user(u1)
+                        .provider(p1)
                         .build();
                 productRepository.createProduct(prod3);
 
@@ -121,8 +113,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_4")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(3))
-                        .user(user1)
-                        .provider(provider1)
+                        .user(u1)
+                        .provider(p1)
                         .build();
                 productRepository.createProduct(prod4);
 
@@ -132,8 +124,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_5")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(3))
-                        .user(user3)
-                        .provider(provider1)
+                        .user(u1)
+                        .provider(p1)
                         .build();
                 productRepository.createProduct(prod5);
 
@@ -144,8 +136,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_1")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user1)
-                        .provider(provider2)
+                        .user(u1)
+                        .provider(p1)
                         .build();
                 productRepository.createProduct(prod6);
 
@@ -155,8 +147,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_2")
                         .expiryDate(expiryDate(3))
                         .date(createdAt(2))
-                        .user(user2)
-                        .provider(provider2)
+                        .user(u2)
+                        .provider(p2)
                         .build();
                 productRepository.createProduct(prod7);
 
@@ -166,8 +158,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_3")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(2))
-                        .user(user2)
-                        .provider(provider2)
+                        .user(u2)
+                        .provider(p2)
                         .build();
                 productRepository.createProduct(prod8);
 
@@ -177,8 +169,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_4")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(3))
-                        .user(user3)
-                        .provider(provider2)
+                        .user(u3)
+                        .provider(p2)
                         .build();
                 productRepository.createProduct(prod9);
 
@@ -188,8 +180,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_5")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(3))
-                        .user(user1)
-                        .provider(provider2)
+                        .user(u1)
+                        .provider(p2)
                         .build();
                 productRepository.createProduct(prod10);
 
@@ -200,8 +192,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_1")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user1)
-                        .provider(provider3)
+                        .user(u1)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod11);
 
@@ -211,8 +203,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_2")
                         .expiryDate(expiryDate(3))
                         .date(createdAt(2))
-                        .user(user2)
-                        .provider(provider3)
+                        .user(u2)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod12);
 
@@ -222,8 +214,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_3")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user2)
-                        .provider(provider3)
+                        .user(u2)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod13);
 
@@ -233,8 +225,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_4")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user3)
-                        .provider(provider3)
+                        .user(u3)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod14);
 
@@ -244,8 +236,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_5")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(3))
-                        .user(user1)
-                        .provider(provider3)
+                        .user(u1)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod15);
 
@@ -255,8 +247,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_1")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user1)
-                        .provider(provider3)
+                        .user(u1)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod16);
 
@@ -266,8 +258,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_2")
                         .expiryDate(expiryDate(3))
                         .date(createdAt(2))
-                        .user(user2)
-                        .provider(provider3)
+                        .user(u2)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod17);
 
@@ -277,8 +269,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_3")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user2)
-                        .provider(provider3)
+                        .user(u2)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod18);
 
@@ -288,8 +280,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_4")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(1))
-                        .user(user3)
-                        .provider(provider3)
+                        .user(u3)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod19);
 
@@ -299,8 +291,8 @@ public class DataSeeder implements CommandLineRunner {
                         .name("MEDICINE_5")
                         .expiryDate(expiryDate(2))
                         .date(createdAt(3))
-                        .user(user1)
-                        .provider(provider3)
+                        .user(u1)
+                        .provider(p3)
                         .build();
                 productRepository.createProduct(prod20);
             }

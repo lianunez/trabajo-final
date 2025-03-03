@@ -19,6 +19,8 @@
     />
     <link href="./vendor/chartist/css/chartist.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
   </head>
 
   <body>
@@ -46,7 +48,6 @@
       <div class="nav-header">
         <a href="index.html" class="brand-logo">
           <img class="logo-abbr" src="./images/logo.png" alt="" />
-          <img class="logo-compact" src="./images/logo-text.png" alt="" />
         </a>
 
         <div class="nav-control">
@@ -135,7 +136,7 @@
                 class="has-arrow"
                 href="javascript:void()"
                 aria-expanded="false"
-                ><i class="icon icon-single-04"></i
+                ><i class="icon icon-chart-bar-30"></i
                 ><span class="nav-text">Dashboard</span></a
               >
               <ul aria-expanded="false">
@@ -153,7 +154,7 @@
                 ><span class="nav-text">Productos</span></a
               >
               <ul aria-expanded="false">
-                <li><a href="form-validation.html">Agregar Producto</a></li>
+                <li><a href="form-validation.html" id="products.create">Agregar Producto</a></li>
                 <li>
               </ul>
             </li>
@@ -166,7 +167,21 @@
                 ><span class="nav-text">Proveedores</span></a
               >
               <ul aria-expanded="false">
-                <li><a href="form-validation-providers.html">Agregar Proveedor</a></li>
+                <li><a href="form-validation-providers.html" id="providers.create">Agregar Proveedor</a></li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-single-04"></i
+                ><span class="nav-text">Usuarios</span></a
+              >
+              <ul aria-expanded="false">
+                <li><a href="form-validation-users.html" id="users.create">Agregar Usuario</a></li>
+                <li>
               </ul>
             </li>
             <!-- delete -->
@@ -212,14 +227,18 @@
             </div>
           </div>
           <div class="row">
+            
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-header">
                   <h4 class="card-title">Productos</h4>
+                  <button class="btn btn-success" onclick="exportAllProductsToExcel()">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                  </button>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table student-data-table m-t-20">
+                    <table class="table student-data-table m-t-20" id="products.check">
                       <thead>
                         <tr>
                           <th>Código</th>
@@ -396,7 +415,7 @@
     <script src="./vendor/pg-calendar/js/pignose.calendar.min.js"></script>
 
     <script src="./js/dashboard/dashboard-2.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Circle progress -->
   </body>
 </html>

@@ -3,6 +3,7 @@ package org.data.repository.product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.domain.product.Product;
 import org.domain.product.ProductDTO;
@@ -34,20 +35,34 @@ public class ProductRepository {
         }
     }
 
-    public List<Product> getProducts() {
-        return repoInterface.findAll();
-    }
-
     @Transactional
-    public void deleteProduct(String id) {
-        Product foundProduct = entityManager.find(Product.class, String.valueOf(id));
-        if (foundProduct != null) {
-            entityManager.remove(foundProduct);
+    public List<Product> getProducts() {
+        try {
+            String sql = "SELECT p FROM Product p " +
+                    "LEFT JOIN FETCH p.user u " +  // Eagerly fetch User
+                    "LEFT JOIN FETCH p.provider pr"; // Eagerly fetch Provider
+            TypedQuery<Product> query = entityManager.createQuery(sql, Product.class);
+            List<Product> products = query.getResultList();
+            return products;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching products: " + e.getMessage(), e);
         }
     }
 
     @Transactional
-    public void updateProduct(Product product){
+    public void deleteProduct(String id) {
+        try {
+            Product foundProduct = entityManager.find(Product.class, String.valueOf(id));
+            if (foundProduct != null) {
+                entityManager.remove(foundProduct);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error removing product: " + e.getMessage(), e);
+        }
+    }
+
+    @Transactional
+    public void updateProduct(Product product) {
         try {
             Objects.requireNonNull(product);
             entityManager.merge(product);

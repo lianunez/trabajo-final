@@ -18,6 +18,22 @@ CREATE TABLE public.providers (
 	CONSTRAINT providers_pk PRIMARY KEY (id)
 );
 
+CREATE TABLE public.roles (
+	id SERIAL,
+	"name" varchar NOT NULL,
+	user_id bigint NOT NULL,
+	CONSTRAINT roles_pk PRIMARY KEY (id),
+	CONSTRAINT users_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE public.permissions (
+	id SERIAL,
+	permissions varchar [] NOT NULL,
+	role_id bigint NOT NULL,
+	CONSTRAINT permissions_pk PRIMARY KEY (id),
+	CONSTRAINT roles_fk FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 CREATE TABLE public.products (
 	id SERIAL,
 	code varchar NOT NULL,
@@ -33,3 +49,10 @@ CREATE TABLE public.products (
 );
 
 INSERT INTO public.users ("name", password) VALUES ('admin', crypt('admin', gen_salt('bf')));
+INSERT INTO public.roles ("name", user_id) VALUES ('ROLE_ADMIN', 1);
+INSERT INTO public.permissions (permissions, role_id)
+VALUES (ARRAY['session.alive',
+'users.check', 'users.delete', 'users.create', 'users.update',
+'products.check', 'products.delete', 'products.create', 'products.update',
+'roles.check', 'roles.create', 'roles.update', 'roles.delete',
+'providers.check', 'providers.create', 'providers.update', 'providers.delete'], 1);

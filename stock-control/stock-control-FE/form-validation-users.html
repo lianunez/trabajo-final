@@ -183,12 +183,8 @@
                 ><span class="nav-text">Usuarios</span></a
               >
               <ul aria-expanded="false">
+                <li><a href="form-validation-users.html" id="users.create">Agregar Usuario</a></li>
                 <li>
-                  <a href="form-validation-users.html" id="users.create"
-                    >Agregar Usuario</a
-                  >
-                </li>
-                <li></li>
               </ul>
             </li>
             <!-- delete -->
@@ -211,7 +207,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                   <div class="page-header">
                     <div class="page-title">
-                      <h1>Crear Producto</h1>
+                      <h1>Crear Usuario</h1>
                     </div>
                   </div>
                 </div>
@@ -223,7 +219,7 @@
                         <li class="breadcrumb-item">
                           <a href="/index.html">Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Crear Producto</li>
+                        <li class="breadcrumb-item active">Crear Usuario</li>
                       </ol>
                     </div>
                   </div>
@@ -242,23 +238,6 @@
                               <label
                                 class="col-lg-4 col-form-label"
                                 for="val-username"
-                                >Código
-                                <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <input
-                                  type="number"
-                                  class="form-control"
-                                  id="code-input"
-                                  name="val-username"
-                                  placeholder="Código del producto"
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-email"
                                 >Nombre
                                 <span class="text-danger">*</span></label
                               >
@@ -267,69 +246,145 @@
                                   type="text"
                                   class="form-control"
                                   id="name-input"
+                                  name="val-username"
+                                  placeholder="Ingrese el nombre del usuario"
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div class="form-group row">
+                              <label
+                                class="col-lg-4 col-form-label"
+                                for="val-email"
+                                >Contraseña
+                                <span class="text-danger">*</span></label
+                              >
+                              <div class="col-lg-8">
+                                <input
+                                  type="password"
+                                  class="form-control"
+                                  id="pass-input"
                                   name="val-email"
-                                  placeholder="Ingrese el nombre del producto..."
+                                  placeholder="Ingrese una clave"
+                                  required
                                 />
                               </div>
                             </div>
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-password"
-                                >Cantidad
-                                <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <input
-                                  type="number"
-                                  class="form-control"
-                                  id="amount-input"
-                                  name="val-password"
-                                  placeholder="Cuántos productos hay?"
-                                />
+                            <div class="card">
+                              <div class="card-header">
+                                <h4 class="card-title">Permisos de Producto</h4>
+                              </div>
+                              <div class="card-body">
+                                <div class="basic-form">
+                                  <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          id="products.create"
+                                          class="form-check-input"
+                                          value="products.create"
+                                        />Crear
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input type="checkbox"
+                                        id="products.update"
+                                        class="form-check-input"
+                                        value="products.update">Editar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          id="products.delete"
+                                          class="form-check-input"
+                                          value="products.delete"
+                                        />Eliminar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          id="products.check"
+                                          class="form-check-input"
+                                          value="products.check"
+                                        />Chequear
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-confirm-password"
-                                >Fecha de VTO
-                                <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <input
-                                  type="date"
-                                  class="form-control"
-                                  id="date-input"
-                                  name="val-confirm-password"
-                                  placeholder="..and confirm it!"
-                                />
+
+                            <div class="card">
+                              <div class="card-header">
+                                <h4 class="card-title">
+                                  Permisos de Proveedor
+                                </h4>
                               </div>
-                            </div>
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-select2"
-                                >Proveedores
-                                <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <select
-                                  class="js-select2 form-control"
-                                  id="val-select2"
-                                  name="val-select2"
-                                  style="width: 100%"
-                                  data-placeholder="Choose one.."
-                                >
-                                  <option value="">Choose one..</option>
-                                </select>
+                              <div class="card-body">
+                                <div class="basic-form">
+                                  <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.create"
+                                          value="providers.create"
+                                        />Crear
+                                      </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.update"
+                                          value="providers.update"
+                                        />Editar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.delete"
+                                          value="providers.delete"
+                                        />Eliminar
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="providers.check"
+                                          value="providers.check"
+                                        />Chequear
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </form>
                           <div class="mb-3 text-success" id="after-process-msg">
                             Proveedor agreagado correctamente
                           </div>
-
                           <div class="form-group row">
                             <div class="col-lg-8 ml-auto">
                               <button
@@ -413,9 +468,9 @@
 
     <script>
       let messageDiv = document.getElementById("after-process-msg");
-        messageDiv.hidden = true;
+      messageDiv.hidden = true;
+    
       async function fetchProviders() {
-        
         try {
           let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
@@ -467,26 +522,42 @@
 
       async function createProduct() {
         const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-
-        const code = document.getElementById("code-input").value;
+        let permissions = ["session.alive"];
         const name = document.getElementById("name-input").value;
-        const amount = document.getElementById("amount-input").value;
-        const expiry_date = document.getElementById("date-input").value;
-        const user_id = userInfo?.id;
-        const provider_id = document.getElementById("val-select2").value;
+        const password = document.getElementById("pass-input").value;
+
+        let checkboxes = [
+          document.getElementById("products.create"),
+          document.getElementById("products.update"),
+          document.getElementById("products.delete"),
+          document.getElementById("products.check"),
+          document.getElementById("providers.create"),
+          document.getElementById("providers.update"),
+          document.getElementById("providers.delete"),
+          document.getElementById("providers.check"),
+        ]
+
+        checkboxes.forEach((checkbox) =>{
+          if (checkbox.checked){
+              permissions.push(checkbox.value);
+          }
+        })
+
+        const role = {
+          name: "ROLE_"+name.split(" ")[0],
+          user_id: 123456,
+          permissions: permissions
+        }
 
         const data = {
-          code: code,
-          name: name,
-          amount: amount,
-          expiry_date: expiry_date,
-          user_id: user_id,
-          provider_id: provider_id,
+          user_name: name,
+          password: password,
+          role: role
         };
 
         try {
           const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/products/create",
+            "http://127.0.0.1:8080/api/v1/users/create",
             {
               method: "POST",
               headers: {
@@ -497,19 +568,18 @@
               body: JSON.stringify(data),
             }
           );
-          
+
           switch (response.status) {
             case 201:
             case 200:
-              console.log(response.status);
+            //let messageDiv = document.getElementById("after-process-msg");
               messageDiv.hidden = false;
               break;
             case 403:
-              let messageField = document.getElementById("after-process-msg");
-              messageField.classList = "mb-3 text-danger";
-              messageField.innerHTML =
-                "No tienes permisos para esta acción o tu sesión finalizó";
-              messageField.hidden = false;
+            let messageField = document.getElementById("after-process-msg");
+            messageField.classList = "mb-3 text-danger";
+            messageField.innerHTML = "No tienes permisos para esta acción";
+            messageField.hidden = false;
               break;
             default:
               messageDiv.classList = "mb-3 text-danger";
@@ -518,7 +588,7 @@
               break;
           }
         } catch (error) {
-          console.error("Error fetching providers:", error);
+          console.error("Error fetching users:", error);
         }
 
         console.log(data);

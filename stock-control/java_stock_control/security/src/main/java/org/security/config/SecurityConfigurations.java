@@ -2,6 +2,7 @@ package org.security.config;
 
 import org.application.user.JWTUserService;
 import org.security.jwt.JWTRequestFilter;
+import org.security.roles.RoleCheckFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,9 +26,11 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfigurations {
     private final JWTRequestFilter jwtRequestFilter;
+    private final RoleCheckFilter roleCheckFilter;
 
-    public SecurityConfigurations(JWTRequestFilter jwtRequestFilter) {
+    public SecurityConfigurations(JWTRequestFilter jwtRequestFilter, RoleCheckFilter roleCheckFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
+        this.roleCheckFilter = roleCheckFilter;
     }
 
     @Bean
@@ -38,7 +42,7 @@ public class SecurityConfigurations {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/liveness")
                         .permitAll()
@@ -47,7 +51,8 @@ public class SecurityConfigurations {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(roleCheckFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
@@ -63,9 +68,9 @@ public class SecurityConfigurations {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500", "https://---.com", "https://*.ngrok-free.app"));
+        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5500", "https://---.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Trigger-User"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -9,10 +9,11 @@ async function main() {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8080/session/alive", {
+    const response = await fetch("http://127.0.0.1:8080/api/v1/session/alive", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Trigger-User": userInfo.id,
         Authorization: `Bearer ${userInfo.jwt}`,
       },
     });

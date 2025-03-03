@@ -12,17 +12,28 @@ import java.util.List;
 @Service
 public class ProviderService {
     private final ProviderRepository providerRepository;
+
     @Autowired
     public ProviderService(ProviderRepository providerRepository) {
         this.providerRepository = providerRepository;
     }
 
     @Transactional
-    public Provider createProvider(Provider provider){
+    public Provider createProvider(Provider provider) {
         return this.providerRepository.createProvider(provider);
     }
 
-    public List<Provider> findAll(){
+    public List<Provider> findAll() {
         return providerRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        providerRepository.delete(id);
+    }
+
+    @Transactional
+    public void update(Provider provider){
+        providerRepository.update(provider);
     }
 }

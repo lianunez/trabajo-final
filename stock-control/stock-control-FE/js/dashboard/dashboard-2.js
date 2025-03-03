@@ -14,7 +14,6 @@ async function getProducts() {
     switch (response.status) {
       case 200:
         const products = await response.text().then(JSON.parse);
-        console.log(products);
         setProductsTable(products);
         graphics(products);
         break;
@@ -33,11 +32,12 @@ async function getProducts() {
 async function productsFromAPI(userInfo) {
   try {
     const response = await fetch(
-      "http://127.0.0.1:8080/api/v1/products/get-products",
+      "http://127.0.0.1:8080/api/v1/products/check",
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Trigger-User": userInfo.id,
           Authorization: `Bearer ${userInfo.jwt}`,
         },
       }
@@ -52,6 +52,7 @@ let currentPage = 1;
 const rowsPerPage = 5; // Number of rows per page
 
 function setProductsTable(products, page = 1) {
+  console.log("table");
   const tableBody = document.getElementById("prod-table-body");
   tableBody.innerHTML = "";
 
@@ -75,10 +76,10 @@ function setProductsTable(products, page = 1) {
         <td>${product.user_id.user}</td>
         <td>${product.provider_id.name}</td>
         <td>
-            <button class="btn btn-warning" onclick="openEditModal(${product.id})">Edit</button>
+            <button class="btn btn-warning" onclick="openEditModal(${product.id})" data-permission="products.update">Edit</button>
         </td>
         <td>
-            <button class="btn btn-danger" onclick="confirmDelete(${product.id})">Delete</button>
+            <button class="btn btn-danger" onclick="confirmDelete(${product.id})" data-permission="products.delete">Delete</button>
         </td>
     `;
 
@@ -86,6 +87,8 @@ function setProductsTable(products, page = 1) {
   });
 
   updatePaginationButtons(products);
+  handleDynamicTablePermissions(); // Apply permissions to the dynamic table
+  handleStaticElementsPermissions();
 }
 
 function updatePaginationButtons(products) {
@@ -161,6 +164,7 @@ async function deleteProduct(id) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          "Trigger-User": userInfo.id,
           Authorization: `Bearer ${userInfo?.jwt}`,
         },
       }
@@ -229,17 +233,16 @@ async function updateProduct() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Trigger-User": userInfo.id,
           Authorization: `Bearer ${userInfo?.jwt}`,
         },
         body: JSON.stringify(data),
       }
     );
 
-    console.log("update status", response.status);
     switch (response.status) {
       case 200:
         let messageDiv = document.getElementById("after-process-msg");
-        console.log(messageDiv);
         messageDiv.hidden = false;
         messageDiv.classList = "mb-3 text-success";
         messageDiv.innerHTML = "Producto actualizado.";
@@ -250,8 +253,15 @@ async function updateProduct() {
         getProducts();
         //messageDiv.style.display = "none";
         break;
+      case 403:
+        let messageField = document.getElementById("after-process-msg");
+        messageField.hidden = false;
+        messageField.classList = "mb-3 text-danger";
+        messageField.innerHTML = "No tienes permisos para esta acción.";
+        break;
+
       default:
-        messageDiv.style.display = "block"
+        messageDiv.style.display = "block";
         messageDiv.classList = "mb-3 text-danger";
         messageDiv.innerHTML = "Algo salió mal.";
         //messageDiv.style.display = "none";
@@ -403,7 +413,6 @@ function groupProductsByMonth(products) {
     monthMap[month].count += 1;
   });
 
-  console.log(monthMap);
   return monthMap;
 }
 
@@ -411,3 +420,124 @@ function getClassName(index) {
   const classes = ["bg-facebook", "bg-twitter", "bg-youtube", "bg-google-plus"];
   return classes[index % classes.length];
 }
+
+//roles
+function handleDynamicTablePermissions() {
+  console.log("handleDynamicTablePermissions");
+  // Get the user permissions from session storage
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+  if (
+    !userInfo ||
+    !userInfo.role ||
+    !Array.isArray(userInfo.role.permissions)
+  ) {
+    console.error("Invalid userInfo structure:", userInfo);
+    return;
+  }
+
+  const permissions = userInfo.role.permissions;
+
+  // Loop through all the edit and delete buttons in the dynamic table
+  const actionButtons = document.querySelectorAll("[data-permission]"); // Target elements with data-permission attribute
+
+  actionButtons.forEach((button) => {
+    const actionId = button.getAttribute("data-permission");
+
+    if (actionId && !permissions.includes(actionId)) {
+      button.style.display = "none"; // Hide button if permission is not found
+    }
+  });
+}
+
+function handleStaticElementsPermissions() {
+  console.log("handleStaticElementsPermissions");
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+  if (
+    !userInfo ||
+    !userInfo.role ||
+    !Array.isArray(userInfo.role.permissions)
+  ) {
+    console.error("Invalid userInfo structure:", userInfo);
+    return;
+  }
+
+  const actions = [
+    document.getElementById("products.create"),
+    document.getElementById("providers.create"),
+    document.getElementById("products.check"),
+    document.getElementById("users.create"),
+  ];
+
+  const permissions = userInfo.role.permissions;
+  console.log(permissions);
+
+  actions.forEach((action) => {
+    if (action) {
+      const actionId = action.id;
+      if (!permissions.includes(actionId)) {
+        action.style.display = "none";
+      }
+    }
+  });
+}
+
+async function exportAllProductsToExcel() {
+  try {
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    if (!userInfo || !userInfo.jwt || !userInfo.id) {
+      console.error("User not logged in or missing JWT!");
+      return;
+    }
+
+    const response = await productsFromAPI(userInfo);
+    
+    // Check if response was successful
+    if (!response.ok) {
+      console.error("Failed to fetch products, status:", response.status);
+      return;
+    }
+
+    // Parse the response to get the products
+    const products = await response.json();
+
+    // Check if products is an array
+    if (!Array.isArray(products) || products.length === 0) {
+      console.error("No products available for export!");
+      return;
+    }
+
+    // Define headers
+    const headers = [
+      "Code",
+      "Name",
+      "Amount",
+      "Expiry Date",
+      "User",
+      "Provider",
+    ];
+    let data = [headers];
+
+    // Extract all product data
+    products.forEach((product) => {
+      data.push([
+        product.code || "N/A",
+        product.name || "N/A",
+        product.amount || 0,
+        product.expiry_date || "N/A",
+        product.user_id?.user || "Unknown",
+        product.provider_id?.name || "Unknown",
+      ]);
+    });
+
+    // Create a worksheet
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "All Products");
+
+    // Save the Excel file
+    XLSX.writeFile(wb, "products.xlsx");
+  } catch (error) {
+    console.error("Error exporting to Excel:", error);
+  }
+}
+

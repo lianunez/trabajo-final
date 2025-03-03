@@ -11,13 +11,11 @@ import org.domain.role.RoleDTO;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserDTO {
-    @JsonProperty("id")
-    private Integer id;
-    @JsonProperty("user")
-    private String userName;
-    @JsonProperty("jwt")
-    private String jwt;
+public class UserCreateDTO {
+    @JsonProperty("user_name")
+    private String name;
+    @JsonProperty("password")
+    private String password;
     @JsonProperty("role")
     private RoleDTO role;
 }
