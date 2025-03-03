@@ -55,7 +55,7 @@ public class RoleCheckFilter extends OncePerRequestFilter {
             ));
 
             // Pass the JSON payload to the access check service
-            boolean hasAccess = roleCheckService.hasAccess(username, request.getRequestURI(), requestPayload);
+                boolean hasAccess = roleCheckService.hasAccess(username, request.getRequestURI(), requestPayload);
             if (!hasAccess) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
                 return;

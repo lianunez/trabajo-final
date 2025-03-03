@@ -19,6 +19,8 @@
     />
     <link href="./vendor/chartist/css/chartist.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
   </head>
 
   <body>
@@ -165,7 +167,7 @@
                 ><span class="nav-text">Proveedores</span></a
               >
               <ul aria-expanded="false">
-                <li><a href="form-validation-providers.html" id="providers.add">Agregar Proveedor</a></li>
+                <li><a href="form-validation-providers.html" id="providers.create">Agregar Proveedor</a></li>
               </ul>
             </li>
 
@@ -225,10 +227,14 @@
             </div>
           </div>
           <div class="row">
+            
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-header">
                   <h4 class="card-title">Productos</h4>
+                  <button class="btn btn-success" onclick="exportAllProductsToExcel()">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                  </button>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -409,7 +415,7 @@
     <script src="./vendor/pg-calendar/js/pignose.calendar.min.js"></script>
 
     <script src="./js/dashboard/dashboard-2.js"></script>
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Circle progress -->
   </body>
 </html>

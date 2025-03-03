@@ -43,10 +43,12 @@ public class RoleCheckService {
     private boolean hasPermissions(String uri, User user) {
         String resource = extractResource(uri);
 
-        if (resource.length() > 0) {
-            boolean hasAccess = user.getRole().getPermission().getPermissions().stream()
-                    .anyMatch(permission -> permission.matches(resource));
-            return hasAccess;
+        if (!resource.isEmpty()) {
+            // Normalize the resource by removing trailing numbers
+            String normalizedResource = resource.replaceAll("\\.\\d+$", "");
+
+            return user.getRole().getPermission().getPermissions().stream()
+                    .anyMatch(permission -> permission.equals(normalizedResource) || permission.matches(normalizedResource + "\\..*"));
         }
         return false;
     }

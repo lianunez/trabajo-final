@@ -239,7 +239,7 @@ async function updateProduct() {
         body: JSON.stringify(data),
       }
     );
-    alert(response.status);
+
     switch (response.status) {
       case 200:
         let messageDiv = document.getElementById("after-process-msg");
@@ -480,3 +480,64 @@ function handleStaticElementsPermissions() {
     }
   });
 }
+
+async function exportAllProductsToExcel() {
+  try {
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    if (!userInfo || !userInfo.jwt || !userInfo.id) {
+      console.error("User not logged in or missing JWT!");
+      return;
+    }
+
+    const response = await productsFromAPI(userInfo);
+    
+    // Check if response was successful
+    if (!response.ok) {
+      console.error("Failed to fetch products, status:", response.status);
+      return;
+    }
+
+    // Parse the response to get the products
+    const products = await response.json();
+
+    // Check if products is an array
+    if (!Array.isArray(products) || products.length === 0) {
+      console.error("No products available for export!");
+      return;
+    }
+
+    // Define headers
+    const headers = [
+      "Code",
+      "Name",
+      "Amount",
+      "Expiry Date",
+      "User",
+      "Provider",
+    ];
+    let data = [headers];
+
+    // Extract all product data
+    products.forEach((product) => {
+      data.push([
+        product.code || "N/A",
+        product.name || "N/A",
+        product.amount || 0,
+        product.expiry_date || "N/A",
+        product.user_id?.user || "Unknown",
+        product.provider_id?.name || "Unknown",
+      ]);
+    });
+
+    // Create a worksheet
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "All Products");
+
+    // Save the Excel file
+    XLSX.writeFile(wb, "products.xlsx");
+  } catch (error) {
+    console.error("Error exporting to Excel:", error);
+  }
+}
+

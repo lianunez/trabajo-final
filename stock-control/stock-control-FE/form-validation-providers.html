@@ -401,28 +401,14 @@
               <form id="editProductForm">
                 <input type="hidden" id="editProductId" />
                 <div class="mb-3">
-                  <label class="form-label">Code:</label>
-                  <input type="text" id="editCode" class="form-control" />
+                  <label class="form-label">CUIT:</label>
+                  <input type="text" id="editCuit" class="form-control" />
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Name:</label>
+                  <label class="form-label">Nombre / Razón Social:</label>
                   <input type="text" id="editName" class="form-control" />
                 </div>
-                <div class="mb-3">
-                  <label class="form-label">Amount:</label>
-                  <input type="number" id="editAmount" class="form-control" />
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Expiry Date:</label>
-                  <input type="date" id="editExpiryDate" class="form-control" />
-                </div>
 
-                <input
-                  type="number"
-                  id="editUserId"
-                  class="form-control"
-                  hidden
-                />
                 <input
                   type="number"
                   id="editProviderId"
@@ -430,8 +416,8 @@
                   hidden
                 />
 
-                <div class="mb-3 text-success" id="after-process-msg">
-                  Producto actualizado.
+                <div class="mb-3 text-success" id="after-process-msg-modal">
+                  Proveedor actualizado.
                 </div>
 
                 <button
@@ -658,7 +644,8 @@
           );
 
           switch (response.status) {
-            case 201 || 200:
+            case 201:
+            case 200:
               messageDiv.hidden = false;
               fetchProviders();
               break;
@@ -680,6 +667,55 @@
           messageDiv.classList = "mb-3 text-danger";
           messageDiv.innerHTML = `Algo salió mal. ${error}`;
           messageDiv.hidden = false;
+        }
+      }
+
+      // <DELETE>
+      function confirmDelete(productId) {
+        const isConfirmed = confirm("Estás seguro de eliminar este producto?");
+
+        if (isConfirmed) {
+          deleteProduct(productId);
+        }
+      }
+      async function deleteProduct(id) {
+        try {
+          const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+          const response = await fetch(
+            `http://127.0.0.1:8080/api/v1/providers/delete/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+            }
+          );
+
+          switch (response.status) {
+            case 201:
+            case 200:
+              //let messageDiv = document.getElementById("after-process-msg");
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Proveedor eliminado.";
+              messageDiv.hidden = false;
+              fetchProviders();
+              break;
+            case 403:
+              let messageField = document.getElementById("after-process-msg");
+              messageField.classList = "mb-3 text-danger";
+              messageField.innerHTML = "No tienes permisos para esta acción";
+              messageField.hidden = false;
+              break;
+            default:
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Algo salió mal.";
+              messageDiv.hidden = false;
+              break;
+          }
+        } catch (error) {
+          log.error(error);
         }
       }
 
@@ -745,29 +781,113 @@
 
       // <EDIT>
       async function openEditModal(productId) {
-        let messageDiv = document.getElementById("after-process-msg");
+        let messageDiv = document.getElementById("after-process-msg-modal");
         messageDiv.hidden = true;
         let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        const response = await productsFromAPI(userInfo);
-        const products = await response.json();
+        const products = await getProviders();
         const product = products.find((p) => p.id === productId);
         if (!product) return;
 
         // Fill form fields
-        document.getElementById("editProductId").value = product.id;
-        document.getElementById("editCode").value = product.code;
+        document.getElementById("editProviderId").value = product.id;
+        document.getElementById("editCuit").value = product.cuit;
         document.getElementById("editName").value = product.name;
-        document.getElementById("editAmount").value = product.amount;
-        document.getElementById("editExpiryDate").value = product.expiry_date;
-        document.getElementById("editUserId").value = product.user_id.id;
-        document.getElementById("editProviderId").value =
-          product.provider_id.id;
 
         // Show modal
         const modal = new bootstrap.Modal(
           document.getElementById("editProductModal")
         );
         modal.show();
+      }
+
+      async function getProviders() {
+        try {
+          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
+          const response = await fetch(
+            "http://127.0.0.1:8080/api/v1/providers/check",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              const providers = await response.json();
+              return providers;
+              break;
+            case 403:
+              location.href = "./components/logout.html";
+              break;
+            case 500:
+          }
+        } catch (error) {
+          console.error("Error fetching providers:", error);
+        }
+      }
+
+      async function updateProduct() {
+        try {
+          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+          const productId = document.getElementById("editProviderId").value;
+          const data = {
+            id: productId,
+            cuit: document.getElementById("editCuit").value,
+            name: document.getElementById("editName").value
+          };
+          
+          const response = await fetch(
+            "http://127.0.0.1:8080/api/v1/providers/update",
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+              body: JSON.stringify(data),
+            }
+          );
+
+          switch (response.status) {
+            case 200:
+              let messageDiv = document.getElementById("after-process-msg-modal");
+              messageDiv.hidden = false;
+              messageDiv.classList = "mb-3 text-success";
+              messageDiv.innerHTML = "Producto actualizado.";
+              const modal = new bootstrap.Modal(
+                document.getElementById("editProductModal")
+              );
+              modal.hide();
+              fetchProviders();
+              //messageDiv.style.display = "none";
+              break;
+            case 403:
+              let messageField = document.getElementById("after-process-msg-modal");
+              messageField.hidden = false;
+              messageField.classList = "mb-3 text-danger";
+              messageField.innerHTML = "No tienes permisos para esta acción.";
+              break;
+
+            default:
+              messageDiv.style.display = "block";
+              messageDiv.classList = "mb-3 text-danger";
+              messageDiv.innerHTML = "Algo salió mal.";
+              //messageDiv.style.display = "none";
+              break;
+          }
+        } catch (error) {
+          console.error(error);
+          let messageDiv = document.getElementById("after-process-msg-modal");
+          messageDiv.hidden = false;
+          messageDiv.classList = "mb-3 text-danger";
+          messageDiv.innerHTML = `Algo salió mal. ${error}`;
+        }
       }
     </script>
   </body>

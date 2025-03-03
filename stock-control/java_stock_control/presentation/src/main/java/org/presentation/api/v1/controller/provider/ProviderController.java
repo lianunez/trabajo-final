@@ -30,4 +30,16 @@ public class ProviderController {
         List<Provider> providers = proverService.findAll();
         return ResponseEntity.ok().body(providers);
     }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<String> update(@RequestBody Provider provider) {
+        proverService.update(provider);
+        return ResponseEntity.ok().body("UPDATED!");
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id) {
+        proverService.delete(id);
+        return ResponseEntity.ok().body("DELETED!");
+    }
 }

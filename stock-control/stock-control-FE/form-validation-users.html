@@ -266,6 +266,7 @@
                                   id="pass-input"
                                   name="val-email"
                                   placeholder="Ingrese una clave"
+                                  required
                                 />
                               </div>
                             </div>
@@ -289,7 +290,7 @@
                                     <div class="form-check form-check-inline">
                                       <label class="form-check-label">
                                         <input type="checkbox"
-                                        id="products.update""
+                                        id="products.update"
                                         class="form-check-input"
                                         value="products.update">Editar
                                       </label>
@@ -569,7 +570,8 @@
           );
 
           switch (response.status) {
-            case 201 || 200:
+            case 201:
+            case 200:
             //let messageDiv = document.getElementById("after-process-msg");
               messageDiv.hidden = false;
               break;
