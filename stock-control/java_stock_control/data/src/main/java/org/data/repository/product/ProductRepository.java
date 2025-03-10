@@ -70,4 +70,25 @@ public class ProductRepository {
             throw new RuntimeException("Error updating product: " + e.getMessage(), e);
         }
     }
+
+    public Product getProductById(Integer id) {
+        try {
+            Objects.requireNonNull(id);
+            return entityManager.find(Product.class, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching product: " + e.getMessage(), e);
+        }
+    }
+
+    public List<Product> getProductsById(List<Integer> ids) {
+        try {
+            String sql = "SELECT p FROM Product p WHERE p.id IN :ids";
+            List<Product> products = entityManager.createQuery(sql, Product.class)
+                    .setParameter("ids", ids)
+                    .getResultList();
+            return products;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching products: " + e.getMessage(), e);
+        }
+    }
 }

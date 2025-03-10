@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.domain.product.Product;
 import org.domain.role.Role;
+import org.domain.transfer.Transfer;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public class User {
     private List<Product> products;
     @OneToOne(targetEntity = Role.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "user")
     private Role role;
+    @OneToMany(targetEntity = Transfer.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Transfer> transfers;
 }
