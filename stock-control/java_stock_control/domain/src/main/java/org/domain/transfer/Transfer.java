@@ -1,6 +1,6 @@
 package org.domain.transfer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,10 +24,9 @@ public class Transfer {
     @Column(name = "date")
     private String date;
     private String area;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @OneToMany(targetEntity = ProductHasTransfer.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "transfer")
-    @JsonIgnore
     private List<ProductHasTransfer> transfers;
 }
