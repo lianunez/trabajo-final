@@ -67,7 +67,8 @@ public class TransferRepository {
             String sql = "SELECT t FROM Transfer t " +
                     "JOIN t.user u " +
                     "JOIN t.transfers pht " +
-                    "JOIN pht.product p";
+                    "JOIN pht.product p " +
+                    "ORDER BY t.id ASC";
 
             TypedQuery<Transfer> transfers = entityManager.createQuery(sql, Transfer.class);
             return transfers.getResultList();

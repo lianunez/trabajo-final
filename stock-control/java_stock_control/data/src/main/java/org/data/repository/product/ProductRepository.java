@@ -40,7 +40,8 @@ public class ProductRepository {
         try {
             String sql = "SELECT p FROM Product p " +
                     "LEFT JOIN FETCH p.user u " +  // Eagerly fetch User
-                    "LEFT JOIN FETCH p.provider pr"; // Eagerly fetch Provider
+                    "LEFT JOIN FETCH p.provider pr " + // Eagerly fetch Provider
+                    "ORDER BY p.id ASC"; // Order by ID ascending
             TypedQuery<Product> query = entityManager.createQuery(sql, Product.class);
             List<Product> products = query.getResultList();
             return products;

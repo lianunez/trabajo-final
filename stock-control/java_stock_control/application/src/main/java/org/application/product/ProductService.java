@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,12 @@ public class ProductService {
 
     public List<Transfer> getTransfers() {
         List<Transfer> transfers = transferRepository.getTransfers();
+        transfers.stream()
+                .forEach(transfer -> {
+                    String stringifyTransferredProducts = stringifyTransferredProducts(transfer.getTransfers());
+                    transfer.setTransferredProducts(stringifyTransferredProducts);
+                    transfer.setTransfers(null);
+                });
         return transfers;
     }
 
@@ -81,25 +88,31 @@ public class ProductService {
 
     private List<ProductHasTransfer> createProductHasTransfer(TransferDTO transferDTO, Transfer transfer, List<Product> products) {
         AtomicReference<List<ProductHasTransfer>> transfers = new AtomicReference<>(new ArrayList<ProductHasTransfer>());
-
-        products.stream().forEach(product -> {
-            transfers.set(transferDTO.getProducts().stream()
-                    .map(dto -> {
-                        ProductHasTransfer productHasTransfer = null;
-                        if (product.getId() == dto.getProductId() && product.getAmount() >= dto.getAmount()) {
-                            productHasTransfer = ProductHasTransfer.builder()
-                                    .amount(dto.getAmount())
-                                    .product(Product.builder().id(dto.getProductId()).build())
-                                    .transfer(transfer)
-                                    .build();
+        transfers.set(transferDTO.getProducts().stream()
+                .map(dto -> {
+                            Integer productStock = productStock(dto.getProductId(), products);
+                            if (productStock >= dto.getAmount()) {
+                                return ProductHasTransfer.builder()
+                                        .amount(dto.getAmount())
+                                        .product(Product.builder().id(dto.getProductId()).build())
+                                        .transfer(transfer)
+                                        .build();
+                            }
+                            return null;
                         }
-                        return productHasTransfer;
-                    })
-                    .filter(dto -> dto != null)
-                    .collect(Collectors.toList()));
-        });
+                )
+                .filter(dto -> dto != null)
+                .collect(Collectors.toList()));
 
         return transfers.get();
+    }
+
+    private Integer productStock(Integer id, List<Product> products) {
+        Product product = products.stream()
+                .filter(prod -> prod.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Transfer not found with ID: " + id));
+        return product.getAmount();
     }
 
     @Transactional
@@ -135,5 +148,24 @@ public class ProductService {
                 .user(User.builder().id(productDTO.getUserId()).build())
                 .provider(Provider.builder().id(productDTO.getProviderId()).build())
                 .build();
+    }
+
+    private String stringifyTransferredProducts(List<ProductHasTransfer> transferredProducts) {
+        StringBuilder stringifyTransferredProducts = new StringBuilder();
+        List<Integer> ids = transferredProducts.stream()
+                .map(transfer -> transfer.getProduct().getId())
+                .collect(Collectors.toList());
+        List<Product> products = repository.getProductsById(ids);
+        products.forEach(product -> {
+            transferredProducts.stream()
+                    .filter(t -> t.getProduct().getId().equals(product.getId()))
+                    .findFirst()
+                    .ifPresent(transfer -> {
+                        String stringifyTransfer = product.getName() + ": " + transfer.getAmount() + "<br>";
+                        stringifyTransferredProducts.append(stringifyTransfer);
+                    });
+        });
+
+        return stringifyTransferredProducts.toString();
     }
 }

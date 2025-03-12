@@ -1,5 +1,6 @@
 package org.domain.productHasTransfer;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,10 +23,9 @@ public class ProductHasTransfer {
     private Integer amount;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnore
     private Product product;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transfer_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     private Transfer transfer;
 }

@@ -1,6 +1,8 @@
 package org.domain.transfer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,5 +30,8 @@ public class Transfer {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @OneToMany(targetEntity = ProductHasTransfer.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "transfer")
+    @JsonManagedReference
     private List<ProductHasTransfer> transfers;
+    @Transient
+    private String transferredProducts;
 }
