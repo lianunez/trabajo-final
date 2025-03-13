@@ -161,7 +161,7 @@ public class ProductService {
                     .filter(t -> t.getProduct().getId().equals(product.getId()))
                     .findFirst()
                     .ifPresent(transfer -> {
-                        String stringifyTransfer = product.getName() + ": " + transfer.getAmount() + "<br>";
+                        String stringifyTransfer = product.getCode() +" - "+ product.getName() + ": " + transfer.getAmount() + "<br>";
                         stringifyTransferredProducts.append(stringifyTransfer);
                     });
         });
