@@ -466,6 +466,8 @@ function handleStaticElementsPermissions() {
     document.getElementById("providers.create"),
     document.getElementById("products.check"),
     document.getElementById("users.create"),
+    document.getElementById("transfers.create"),
+    document.getElementById("transfers.check"),
   ];
 
   const permissions = userInfo.role.permissions;
