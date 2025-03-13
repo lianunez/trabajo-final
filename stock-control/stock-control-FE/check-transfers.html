@@ -19,6 +19,10 @@
     />
     <link href="./vendor/chartist/css/chartist.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
   </head>
 
   <body>
@@ -209,8 +213,12 @@
                 <li></li>
               </ul>
               <ul aria-expanded="false">
-                <li><a href="check-transfers.html" id="transfers.check">Transferencias Realizadas</a></li>
                 <li>
+                  <a href="check-transfers.html" id="transfers.check"
+                    >Transferencias Realizadas</a
+                  >
+                </li>
+                <li></li>
               </ul>
             </li>
             <!-- delete -->
@@ -233,7 +241,7 @@
                 <div class="col-lg-8 p-r-0 title-margin-right">
                   <div class="page-header">
                     <div class="page-title">
-                      <h1>Proveedores</h1>
+                      <h1>Transferencias</h1>
                     </div>
                   </div>
                 </div>
@@ -245,7 +253,9 @@
                         <li class="breadcrumb-item">
                           <a href="/index.html">Dashboard</a>
                         </li>
-                        <li class="breadcrumb-item active">Proveedores</li>
+                        <li class="breadcrumb-item active">
+                          Trasnferencias Realizadas
+                        </li>
                       </ol>
                     </div>
                   </div>
@@ -258,15 +268,23 @@
                   <div class="col-lg-12">
                     <div class="card">
                       <div class="card-header">
-                        <h4 class="card-title">Proveedores</h4>
+                        <h4 class="card-title">Transferencias Realizadas</h4>
+                        <button
+                          class="btn btn-success"
+                          onclick="exportAllProductsToExcel()"
+                        >
+                          <i class="fas fa-file-excel"></i> Export to Excel
+                        </button>
                       </div>
                       <div class="card-body">
                         <div class="table-responsive">
                           <table class="table student-data-table m-t-20">
                             <thead>
                               <tr>
-                                <th>CUIT</th>
-                                <th>Nombre</th>
+                                <th>Usuario</th>
+                                <th>Área de transferencia</th>
+                                <th>Fecha - Hora</th>
+                                <th>Código - Nombre: Cantidad</th>
                               </tr>
                             </thead>
                             <tbody id="prod-table-body">
@@ -329,68 +347,6 @@
                             </tbody>
                           </table>
                           <div id="pagination" style="margin-top: 10px"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="card">
-                      <div class="card-header">
-                        <h4 class="card-title">Agregar proveedor</h4>
-                      </div>
-                      <div class="card-body">
-                        <div class="form-validation">
-                          <form class="form-valide">
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-username"
-                                >CUIT <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <input
-                                  type="number"
-                                  class="form-control"
-                                  id="cuit-input"
-                                  name="val-username"
-                                  placeholder="CUIT del proveedor..."
-                                />
-                              </div>
-                            </div>
-                            <div class="form-group row">
-                              <label
-                                class="col-lg-4 col-form-label"
-                                for="val-email"
-                                >Nombre / Razón Social
-                                <span class="text-danger">*</span></label
-                              >
-                              <div class="col-lg-8">
-                                <input
-                                  type="text"
-                                  class="form-control"
-                                  id="name-input"
-                                  name="val-email"
-                                  placeholder="Nombre del proveedor..."
-                                />
-                              </div>
-                            </div>
-                          </form>
-                          <div class="mb-3 text-success" id="after-process-msg">
-                            Proveedor agreagado correctamente
-                          </div>
-                          <div class="form-group row">
-                            <div class="col-lg-8 ml-auto">
-                              <button
-                                onclick="createProvider()"
-                                class="btn btn-primary"
-                              >
-                                Submit
-                              </button>
-                            </div>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -511,19 +467,82 @@
 
     <script src="./vendor/moment/moment.min.js"></script>
     <script src="./vendor/pg-calendar/js/pignose.calendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Circle progress -->
 
     <script>
-      let messageDiv = document.getElementById("after-process-msg");
-      messageDiv.hidden = true;
       fetchProviders();
+      handleStaticElementsPermissions();
+
+      function handleStaticElementsPermissions() {
+        console.log("handleStaticElementsPermissions");
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        if (
+          !userInfo ||
+          !userInfo.role ||
+          !Array.isArray(userInfo.role.permissions)
+        ) {
+          console.error("Invalid userInfo structure:", userInfo);
+          return;
+        }
+
+        const actions = [
+          document.getElementById("products.create"),
+          document.getElementById("providers.create"),
+          document.getElementById("products.check"),
+          document.getElementById("users.create"),
+          document.getElementById("transfers.create"),
+          document.getElementById("transfers.check"),
+        ];
+
+        const permissions = userInfo.role.permissions;
+        console.log(permissions);
+
+        actions.forEach((action) => {
+          if (action) {
+            const actionId = action.id;
+            if (!permissions.includes(actionId)) {
+              action.style.display = "none";
+            }
+          }
+        });
+      }
+
+      async function getTransfers() {
+        try {
+          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
+          const response = await fetch(
+            "http://127.0.0.1:8080/api/v1/transfers/check",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "Trigger-User": userInfo.id,
+                Authorization: `Bearer ${userInfo?.jwt}`,
+              },
+            }
+          );
+          switch (response.status) {
+            case 200:
+              const providers = await response.json();
+              return providers;
+              break;
+            default:
+              return null;
+              break;
+          }
+        } catch (error) {
+          console.error("Error fetching providers:", error);
+        }
+      }
 
       async function fetchProviders() {
         try {
           let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
           const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/check",
+            "http://127.0.0.1:8080/api/v1/transfers/check",
             {
               method: "GET",
               headers: {
@@ -537,7 +556,6 @@
           switch (response.status) {
             case 200:
               const providers = await response.json();
-              console.log(providers);
               setProvidersTable(providers);
               break;
             case 403:
@@ -567,22 +585,16 @@
           const row = document.createElement("tr");
 
           row.innerHTML = `
-              <td>${product.cuit}</td>
-              <td>${product.name}</td>
-              <td>
-                  <button class="btn btn-warning" onclick="openEditModal(${product.id})" data-permission="products.update">Edit</button>
-              </td>
-              <td>
-                  <button class="btn btn-danger" onclick="confirmDelete(${product.id})" data-permission="products.delete">Delete</button>
-              </td>
+              <td>${product.user.user}</td>
+              <td>${product.area}</td>
+              <td>${product.date}</td>
+              <td>${product.transferredProducts}</td>
           `;
 
           tableBody.appendChild(row);
         });
 
         updatePaginationButtons(providers);
-        handleDynamicTablePermissions(); // Apply permissions to the dynamic table
-        handleStaticElementsPermissions();
       }
 
       let currentPage = 1;
@@ -639,276 +651,61 @@
         paginationContainer.appendChild(nextButton);
       }
 
-      //create
-      async function createProvider() {
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-
-        const cuit = document.getElementById("cuit-input").value;
-        const name = document.getElementById("name-input").value;
-
-        const data = {
-          cuit: cuit,
-          name: name,
-        };
-
-        try {
-          const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/create",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Trigger-User": userInfo.id,
-                Authorization: `Bearer ${userInfo?.jwt}`,
-              },
-              body: JSON.stringify(data),
-            }
-          );
-
-          switch (response.status) {
-            case 201:
-            case 200:
-              messageDiv.hidden = false;
-              fetchProviders();
-              break;
-            case 403:
-              messageDiv.classList = "mb-3 text-danger";
-              messageDiv.innerHTML = "No tienes permisos para esta acción";
-              messageDiv.hidden = false;
-              break;
-            default:
-              messageDiv.classList = "mb-3 text-danger";
-              messageDiv.innerHTML = "Algo salió mal.";
-              messageDiv.hidden = false;
-              break;
-          }
-
-          console.log(response.status);
-        } catch (error) {
-          console.error("Error fetching providers:", error);
-          messageDiv.classList = "mb-3 text-danger";
-          messageDiv.innerHTML = `Algo salió mal. ${error}`;
-          messageDiv.hidden = false;
-        }
-      }
-
-      // <DELETE>
-      function confirmDelete(productId) {
-        const isConfirmed = confirm("Estás seguro de eliminar este producto?");
-
-        if (isConfirmed) {
-          deleteProduct(productId);
-        }
-      }
-      async function deleteProduct(id) {
+      async function exportAllProductsToExcel() {
         try {
           const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-          const response = await fetch(
-            `http://127.0.0.1:8080/api/v1/providers/delete/${id}`,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-                "Trigger-User": userInfo.id,
-                Authorization: `Bearer ${userInfo?.jwt}`,
-              },
-            }
-          );
-
-          switch (response.status) {
-            case 201:
-            case 200:
-              //let messageDiv = document.getElementById("after-process-msg");
-              messageDiv.classList = "mb-3 text-danger";
-              messageDiv.innerHTML = "Proveedor eliminado.";
-              messageDiv.hidden = false;
-              fetchProviders();
-              break;
-            case 403:
-              let messageField = document.getElementById("after-process-msg");
-              messageField.classList = "mb-3 text-danger";
-              messageField.innerHTML = "No tienes permisos para esta acción";
-              messageField.hidden = false;
-              break;
-            default:
-              messageDiv.classList = "mb-3 text-danger";
-              messageDiv.innerHTML = "Algo salió mal.";
-              messageDiv.hidden = false;
-              break;
+          if (!userInfo || !userInfo.jwt || !userInfo.id) {
+            console.error("User not logged in or missing JWT!");
+            return;
           }
+
+          const response = await getTransfers();
+          // Check if response was successful
+          if (!response.status == 200) {
+            console.error(
+              "Failed to fetch transfers, status:",
+              response.status
+            );
+            return;
+          }
+
+          // Parse the response to get the products
+          const products = response;
+
+          // Check if products is an array
+          if (!Array.isArray(products) || products.length === 0) {
+            console.error("No products available for export!");
+            return;
+          }
+
+          // Define headers
+          const headers = [
+            "User",
+            "Area",
+            "Date-Time",
+            "Products (name: amount)",
+          ];
+          let data = [headers];
+
+          // Extract all product data
+          products.forEach((product) => {
+            data.push([
+              product.user.user || "N/A",
+              product.area || "N/A",
+              product.date || 0,
+              product.transferredProducts || "N/A",
+            ]);
+          });
+
+          // Create a worksheet
+          const ws = XLSX.utils.aoa_to_sheet(data);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "All Transfers");
+
+          // Save the Excel file
+          XLSX.writeFile(wb, "transfers.xlsx");
         } catch (error) {
-          log.error(error);
-        }
-      }
-
-      //roles
-      function handleDynamicTablePermissions() {
-        console.log("handleDynamicTablePermissions");
-        // Get the user permissions from session storage
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        if (
-          !userInfo ||
-          !userInfo.role ||
-          !Array.isArray(userInfo.role.permissions)
-        ) {
-          console.error("Invalid userInfo structure:", userInfo);
-          return;
-        }
-
-        const permissions = userInfo.role.permissions;
-
-        // Loop through all the edit and delete buttons in the dynamic table
-        const actionButtons = document.querySelectorAll("[data-permission]"); // Target elements with data-permission attribute
-
-        actionButtons.forEach((button) => {
-          const actionId = button.getAttribute("data-permission");
-
-          if (actionId && !permissions.includes(actionId)) {
-            button.style.display = "none"; // Hide button if permission is not found
-          }
-        });
-      }
-
-      function handleStaticElementsPermissions() {
-        console.log("handleStaticElementsPermissions");
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        if (
-          !userInfo ||
-          !userInfo.role ||
-          !Array.isArray(userInfo.role.permissions)
-        ) {
-          console.error("Invalid userInfo structure:", userInfo);
-          return;
-        }
-
-        const actions = [
-          document.getElementById("products.create"),
-          document.getElementById("providers.create"),
-          document.getElementById("products.check"),
-          document.getElementById("users.create"),
-        ];
-
-        const permissions = userInfo.role.permissions;
-        console.log(permissions);
-
-        actions.forEach((action) => {
-          if (action) {
-            const actionId = action.id;
-            if (!permissions.includes(actionId)) {
-              action.style.display = "none";
-            }
-          }
-        });
-      }
-
-      // <EDIT>
-      async function openEditModal(productId) {
-        let messageDiv = document.getElementById("after-process-msg-modal");
-        messageDiv.hidden = true;
-        let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-        const products = await getProviders();
-        const product = products.find((p) => p.id === productId);
-        if (!product) return;
-
-        // Fill form fields
-        document.getElementById("editProviderId").value = product.id;
-        document.getElementById("editCuit").value = product.cuit;
-        document.getElementById("editName").value = product.name;
-
-        // Show modal
-        const modal = new bootstrap.Modal(
-          document.getElementById("editProductModal")
-        );
-        modal.show();
-      }
-
-      async function getProviders() {
-        try {
-          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-
-          const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/check",
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                "Trigger-User": userInfo.id,
-                Authorization: `Bearer ${userInfo?.jwt}`,
-              },
-            }
-          );
-
-          switch (response.status) {
-            case 200:
-              const providers = await response.json();
-              return providers;
-              break;
-            case 403:
-              location.href = "./components/logout.html";
-              break;
-            case 500:
-          }
-        } catch (error) {
-          console.error("Error fetching providers:", error);
-        }
-      }
-
-      async function updateProduct() {
-        try {
-          let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-          const productId = document.getElementById("editProviderId").value;
-          const data = {
-            id: productId,
-            cuit: document.getElementById("editCuit").value,
-            name: document.getElementById("editName").value
-          };
-          
-          const response = await fetch(
-            "http://127.0.0.1:8080/api/v1/providers/update",
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                "Trigger-User": userInfo.id,
-                Authorization: `Bearer ${userInfo?.jwt}`,
-              },
-              body: JSON.stringify(data),
-            }
-          );
-
-          switch (response.status) {
-            case 200:
-              let messageDiv = document.getElementById("after-process-msg-modal");
-              messageDiv.hidden = false;
-              messageDiv.classList = "mb-3 text-success";
-              messageDiv.innerHTML = "Producto actualizado.";
-              const modal = new bootstrap.Modal(
-                document.getElementById("editProductModal")
-              );
-              modal.hide();
-              fetchProviders();
-              //messageDiv.style.display = "none";
-              break;
-            case 403:
-              let messageField = document.getElementById("after-process-msg-modal");
-              messageField.hidden = false;
-              messageField.classList = "mb-3 text-danger";
-              messageField.innerHTML = "No tienes permisos para esta acción.";
-              break;
-
-            default:
-              messageDiv.style.display = "block";
-              messageDiv.classList = "mb-3 text-danger";
-              messageDiv.innerHTML = "Algo salió mal.";
-              //messageDiv.style.display = "none";
-              break;
-          }
-        } catch (error) {
-          console.error(error);
-          let messageDiv = document.getElementById("after-process-msg-modal");
-          messageDiv.hidden = false;
-          messageDiv.classList = "mb-3 text-danger";
-          messageDiv.innerHTML = `Algo salió mal. ${error}`;
+          console.error("Error exporting to Excel:", error);
         }
       }
     </script>

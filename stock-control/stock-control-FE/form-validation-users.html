@@ -187,6 +187,28 @@
                 <li>
               </ul>
             </li>
+
+            <li>
+              <a
+                class="has-arrow"
+                href="javascript:void()"
+                aria-expanded="false"
+                ><i class="icon icon-app-store"></i
+                ><span class="nav-text">Transferir Productos</span></a
+              >
+              <ul aria-expanded="false">
+                <li>
+                  <a href="form-validation-transfers.html" id="transfers.create"
+                    >Transferir</a
+                  >
+                </li>
+                <li></li>
+              </ul>
+              <ul aria-expanded="false">
+                <li><a href="check-transfers.html" id="transfers.check">Transferencias Realizadas</a></li>
+                <li>
+              </ul>
+            </li>
             <!-- delete -->
           </ul>
         </div>
@@ -381,6 +403,42 @@
                                 </div>
                               </div>
                             </div>
+
+                            <div class="card">
+                              <div class="card-header">
+                                <h4 class="card-title">
+                                  Permisos de Transferencia de Productos
+                                </h4>
+                              </div>
+                              <div class="card-body">
+                                <div class="basic-form">
+                                  <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="transfers.create.checkbox"
+                                          value="transfers.create"
+                                        />Crear
+                                      </label>
+                                    </div>
+                                    <div
+                                      class="form-check form-check-inline disabled"
+                                    >
+                                      <label class="form-check-label">
+                                        <input
+                                          type="checkbox"
+                                          class="form-check-input"
+                                          id="transfers.check.checkbox"
+                                          value="transfers.check"
+                                        />Chequear
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </form>
                           <div class="mb-3 text-success" id="after-process-msg">
                             Proveedor agreagado correctamente
@@ -535,6 +593,8 @@
           document.getElementById("providers.update"),
           document.getElementById("providers.delete"),
           document.getElementById("providers.check"),
+          document.getElementById("transfers.create.checkbox"),
+          document.getElementById("transfers.check.checkbox")
         ]
 
         checkboxes.forEach((checkbox) =>{
