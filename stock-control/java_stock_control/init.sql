@@ -48,6 +48,25 @@ CREATE TABLE public.products (
 	CONSTRAINT providers_fk FOREIGN KEY (provider_id) REFERENCES public.providers(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE public.transfers(
+    id SERIAl,
+    "date" varchar NOT NULL,
+    area varchar NOT NULL,
+    user_id bigint NOT NULL,
+    CONSTRAINT transfers_pk PRIMARY KEY (id),
+    CONSTRAINT users_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE public.products_has_transfers(
+    id SERIAL,
+    product_id bigint NOT NULL,
+    transfer_id bigint NOT NULL,
+    amount int NOT NULL,
+    CONSTRAINT products_has_transfers_pk PRIMARY KEY (id),
+    CONSTRAINT products_fk FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT transfers_fk FOREIGN KEY (transfer_id) REFERENCES public.transfers(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 INSERT INTO public.users ("name", password) VALUES ('admin', crypt('admin', gen_salt('bf')));
 INSERT INTO public.roles ("name", user_id) VALUES ('ROLE_ADMIN', 1);
 INSERT INTO public.permissions (permissions, role_id)
@@ -55,4 +74,5 @@ VALUES (ARRAY['session.alive',
 'users.check', 'users.delete', 'users.create', 'users.update',
 'products.check', 'products.delete', 'products.create', 'products.update',
 'roles.check', 'roles.create', 'roles.update', 'roles.delete',
-'providers.check', 'providers.create', 'providers.update', 'providers.delete'], 1);
+'providers.check', 'providers.create', 'providers.update', 'providers.delete',
+'transfers.check', 'transfers.create', 'transfers.update', 'transfers.delete'], 1);

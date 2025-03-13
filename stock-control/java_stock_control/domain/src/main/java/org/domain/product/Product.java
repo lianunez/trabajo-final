@@ -1,13 +1,20 @@
 package org.domain.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.domain.productHasTransfer.ProductHasTransfer;
 import org.domain.provider.Provider;
+import org.domain.transfer.Transfer;
 import org.domain.user.User;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -40,4 +47,7 @@ public class Product {
     Provider provider;
     @Transient
     boolean criticalStock;
+    @OneToMany(targetEntity = ProductHasTransfer.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "product")
+    @JsonIgnore
+    private List<ProductHasTransfer> transfers;
 }

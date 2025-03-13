@@ -40,7 +40,8 @@ public class ProductRepository {
         try {
             String sql = "SELECT p FROM Product p " +
                     "LEFT JOIN FETCH p.user u " +  // Eagerly fetch User
-                    "LEFT JOIN FETCH p.provider pr"; // Eagerly fetch Provider
+                    "LEFT JOIN FETCH p.provider pr " + // Eagerly fetch Provider
+                    "ORDER BY p.id ASC"; // Order by ID ascending
             TypedQuery<Product> query = entityManager.createQuery(sql, Product.class);
             List<Product> products = query.getResultList();
             return products;
@@ -68,6 +69,27 @@ public class ProductRepository {
             entityManager.merge(product);
         } catch (Exception e) {
             throw new RuntimeException("Error updating product: " + e.getMessage(), e);
+        }
+    }
+
+    public Product getProductById(Integer id) {
+        try {
+            Objects.requireNonNull(id);
+            return entityManager.find(Product.class, id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching product: " + e.getMessage(), e);
+        }
+    }
+
+    public List<Product> getProductsById(List<Integer> ids) {
+        try {
+            String sql = "SELECT p FROM Product p WHERE p.id IN :ids";
+            List<Product> products = entityManager.createQuery(sql, Product.class)
+                    .setParameter("ids", ids)
+                    .getResultList();
+            return products;
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching products: " + e.getMessage(), e);
         }
     }
 }
