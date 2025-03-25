@@ -47,6 +47,8 @@ public class Product {
     Provider provider;
     @Transient
     boolean criticalStock;
+    @Transient
+    boolean warningStock;
     @OneToMany(targetEntity = ProductHasTransfer.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "product")
     @JsonIgnore
     private List<ProductHasTransfer> transfers;
