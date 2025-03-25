@@ -130,6 +130,10 @@ public class ProductService {
 
     private void checkCriticalStock(List<Product> products) {
         products.stream().forEach(product -> {
+            if (product.getAmount() > 2 && product.getAmount() <= 5) {
+                product.setWarningStock(true);
+            }
+
             if (product.getAmount() <= 2) {
                 product.setCriticalStock(true);
             }
@@ -161,7 +165,7 @@ public class ProductService {
                     .filter(t -> t.getProduct().getId().equals(product.getId()))
                     .findFirst()
                     .ifPresent(transfer -> {
-                        String stringifyTransfer = product.getCode() +" - "+ product.getName() + ": " + transfer.getAmount() + "<br>";
+                        String stringifyTransfer = product.getCode() + " - " + product.getName() + ": " + transfer.getAmount() + "<br>";
                         stringifyTransferredProducts.append(stringifyTransfer);
                     });
         });
