@@ -68,6 +68,10 @@ function setProductsTable(products, page = 1) {
       row.style.backgroundColor = "#DC3545"; // Alert red for critical stock
     }
 
+    if (product.warningStock) {
+      row.style.backgroundColor = "#EED202"; // Alert yellow for warning stock
+    }
+
     row.innerHTML = `
         <td>${product.code}</td>
         <td>${product.name}</td>
@@ -493,33 +497,21 @@ async function exportAllProductsToExcel() {
 
     const response = await productsFromAPI(userInfo);
     
-    // Check if response was successful
     if (!response.ok) {
       console.error("Failed to fetch products, status:", response.status);
       return;
     }
 
-    // Parse the response to get the products
     const products = await response.json();
 
-    // Check if products is an array
     if (!Array.isArray(products) || products.length === 0) {
       console.error("No products available for export!");
       return;
     }
 
-    // Define headers
-    const headers = [
-      "Code",
-      "Name",
-      "Amount",
-      "Expiry Date",
-      "User",
-      "Provider",
-    ];
+    const headers = ["Code", "Name", "Amount", "Expiry Date", "User", "Provider"];
     let data = [headers];
 
-    // Extract all product data
     products.forEach((product) => {
       data.push([
         product.code || "N/A",
@@ -531,15 +523,38 @@ async function exportAllProductsToExcel() {
       ]);
     });
 
-    // Create a worksheet
     const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Apply styles to headers
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let col = range.s.c; col <= range.e.c; col++) {
+      const cell_address = XLSX.utils.encode_cell({ r: 0, c: col });
+      if (!ws[cell_address]) continue;
+
+      ws[cell_address].s = {
+        font: { bold: true, color: { rgb: "FFFFFF" } }, // White text
+        fill: { fgColor: { rgb: "4F81BD" } }, // Blue background
+        alignment: { horizontal: "center", vertical: "center" },
+      };
+    }
+
+    // Resize columns
+    ws["!cols"] = [
+      { wch: 15 }, // Code
+      { wch: 30 }, // Name
+      { wch: 10 }, // Amount
+      { wch: 15 }, // Expiry Date
+      { wch: 20 }, // User
+      { wch: 25 }, // Provider
+    ];
+
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "All Products");
 
-    // Save the Excel file
     XLSX.writeFile(wb, "products.xlsx");
   } catch (error) {
     console.error("Error exporting to Excel:", error);
   }
 }
+
 
